@@ -1,0 +1,6 @@
+CHANGELOG
+=========
+v1.0.00
+-------
+Added credential management
+Added Student Profile hook
