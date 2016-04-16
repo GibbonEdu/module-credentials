@@ -41,20 +41,20 @@ else {
 	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Title") . "<br/>" ;
+					print __($guid, "Title") . "<br/>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Username") ;
+					print __($guid, "Username") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Password") . "<br/>" ;
+					print __($guid, "Password") . "<br/>" ;
 				print "</th>" ;
 			print "</tr>" ;
 			

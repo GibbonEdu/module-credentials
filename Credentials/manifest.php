@@ -25,7 +25,7 @@ $description="Credentials is a module for storing student login details, and mak
 $entryURL="credentials.php" ;
 $type="Additional" ;
 $category="Admin" ;
-$version="1.0.01" ;
+$version="1.0.02" ;
 $author="Ross Parker" ;
 $url="http://rossparker.org" ;
 

@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Credentials/credentials_student_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -38,7 +38,7 @@ else {
 	
 	if ($gibbonPersonID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -59,7 +59,7 @@ else {
 		}
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-			print _("The selected record does not exist, or you do not have access to it.") ;
+			print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -67,7 +67,7 @@ else {
 			
 			//Proceed!
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/credentials.php'>" . _('Manage Credentials') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/credentials_student.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</a> > </div><div class='trailEnd'>" . _('Add Credential') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/credentials.php'>" . __($guid, 'Manage Credentials') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/credentials_student.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Credential') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -75,19 +75,19 @@ else {
 			$class="error" ;
 			if (!($addReturn=="")) {
 				if ($addReturn=="fail0") {
-					$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($addReturn=="fail2") {
-					$addReturnMessage=_("Your request failed due to a database error.") ;	
+					$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($addReturn=="fail3") {
-					$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($addReturn=="fail4") {
-					$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($addReturn=="success0") {
-					$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
+					$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -98,7 +98,7 @@ else {
 
 			if ($_GET["search"]!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Credentials/credentials_student.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>" . _('Back') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Credentials/credentials_student.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>" . __($guid, 'Back') . "</a>" ;
 				print "</div>" ;
 			}
 
@@ -107,7 +107,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Site Title') ?> *</b><br/>
+							<b><?php print __($guid, 'Site Title') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -120,7 +120,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('URL') ?></b><br/>
+							<b><?php print __($guid, 'URL') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="url" id="url" maxlength=255 value="" type="text" style="width: 300px">
@@ -132,7 +132,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Username') ?></b><br/>
+							<b><?php print __($guid, 'Username') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="username" id="username" maxlength=50 value="" type="text" style="width: 300px">
@@ -140,8 +140,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Password') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Saved using encryption, but displayed in plain text in the system.') ?></i></span>
+							<b><?php print __($guid, 'Password') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Saved using encryption, but displayed in plain text in the system.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="password" id="password" maxlength=50 value="" type="text" style="width: 300px">
@@ -149,11 +149,11 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
