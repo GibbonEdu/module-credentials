@@ -34,8 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
     if (isset($_GET['allStudents'])) {
         $allStudents = $_GET['allStudents'];
     }
-    if ($gibbonPersonID == '') {
-        echo "<div class='error'>";
+    if ($gibbonPersonID == '') { echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
@@ -141,32 +140,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
 								<td class="right">
 									<?php
                                     $passwordPrint = '';
-                    if ($row['password'] != '') {
-                        //Defines
-                                        define('SAFETY_CIPHER', MCRYPT_RIJNDAEL_256);
-                        define('SAFETY_MODE', MCRYPT_MODE_CFB);
-                        define('APPLICATION_WIDE_PASSPHRASE', $guid);
-                        define('ENCRYPTION_DIVIDER_TOKEN', '$$');
+									if ($row['password'] != '') {
+										//Defines
+														define('SAFETY_CIPHER', MCRYPT_RIJNDAEL_256);
+										define('SAFETY_MODE', MCRYPT_MODE_CFB);
+										define('APPLICATION_WIDE_PASSPHRASE', $guid);
+										define('ENCRYPTION_DIVIDER_TOKEN', '$$');
 
                                         //Key, etc.
                                         $key = substr(md5(APPLICATION_WIDE_PASSPHRASE), 0, mcrypt_get_key_size(SAFETY_CIPHER, SAFETY_MODE));
 
                                         //Decrypt
                                         $passwordPrint = mcrypt_decrypt(SAFETY_CIPHER, $key, base64_decode(substr($row['password'], (strpos($row['password'], '$$') + 2))), SAFETY_MODE, base64_decode(substr($row['password'], 0, strpos($row['password'], '$$'))));
-                    }
-                    ?>
+										}
+										?>
 									<input name="password" id="password" maxlength=50 value="<?php echo $passwordPrint ?>" type="text" style="width: 300px">
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field');
-                    ?></i></span>
+									<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field'); ?></i></span>
 								</td>
 								<td class="right">
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
 						</table>

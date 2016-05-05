@@ -38,8 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
         $allStudents = $_GET['allStudents'];
     }
 
-    if ($gibbonPersonID == false) {
-        echo "<div class='error'>";
+    if ($gibbonPersonID == false) { echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
@@ -112,8 +111,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 echo '</th>';
                 echo '</tr>';
 
-                    //Decryption defines
-                    define('SAFETY_CIPHER', MCRYPT_RIJNDAEL_256);
+				//Decryption defines
+				define('SAFETY_CIPHER', MCRYPT_RIJNDAEL_256);
                 define('SAFETY_MODE', MCRYPT_MODE_CFB);
                 define('APPLICATION_WIDE_PASSPHRASE', $guid);
                 define('ENCRYPTION_DIVIDER_TOKEN', '$$');
@@ -143,10 +142,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                     echo '<td>';
                     if ($row['password'] != '') {
                         //Key, etc.
-                                    $key = substr(md5(APPLICATION_WIDE_PASSPHRASE), 0, mcrypt_get_key_size(SAFETY_CIPHER, SAFETY_MODE));
+						$key = substr(md5(APPLICATION_WIDE_PASSPHRASE), 0, mcrypt_get_key_size(SAFETY_CIPHER, SAFETY_MODE));
 
-                                    //Decrypt
-                                    echo mcrypt_decrypt(SAFETY_CIPHER, $key, base64_decode(substr($row['password'], (strpos($row['password'], '$$') + 2))), SAFETY_MODE, base64_decode(substr($row['password'], 0, strpos($row['password'], '$$')))).'<br/>';
+						//Decrypt
+						echo mcrypt_decrypt(SAFETY_CIPHER, $key, base64_decode(substr($row['password'], (strpos($row['password'], '$$') + 2))), SAFETY_MODE, base64_decode(substr($row['password'], 0, strpos($row['password'], '$$')))).'<br/>';
                     }
                     echo '</td>';
                     echo '<td>';

@@ -33,12 +33,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/hook_studentPr
         $sql = 'SELECT * FROM credentialsCredential WHERE gibbonPersonID=:gibbonPersonID ORDER BY title';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
+    } catch (PDOException $e) { echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
+    if ($result->rowCount() < 1) { echo "<div class='error'>";
         echo __($guid, 'There are no records to display.');
         echo '</div>';
     } else {
@@ -55,8 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/hook_studentPr
         echo '</th>';
         echo '</tr>';
 
-            //Decryption defines
-            define('SAFETY_CIPHER', MCRYPT_RIJNDAEL_256);
+		//Decryption defines
+		define('SAFETY_CIPHER', MCRYPT_RIJNDAEL_256);
         define('SAFETY_MODE', MCRYPT_MODE_CFB);
         define('APPLICATION_WIDE_PASSPHRASE', $guid);
         define('ENCRYPTION_DIVIDER_TOKEN', '$$');
@@ -86,10 +84,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/hook_studentPr
             echo '<td>';
             if ($row['password'] != '') {
                 //Key, etc.
-                            $key = substr(md5(APPLICATION_WIDE_PASSPHRASE), 0, mcrypt_get_key_size(SAFETY_CIPHER, SAFETY_MODE));
+				$key = substr(md5(APPLICATION_WIDE_PASSPHRASE), 0, mcrypt_get_key_size(SAFETY_CIPHER, SAFETY_MODE));
 
-                            //Decrypt
-                            echo mcrypt_decrypt(SAFETY_CIPHER, $key, base64_decode(substr($row['password'], (strpos($row['password'], '$$') + 2))), SAFETY_MODE, base64_decode(substr($row['password'], 0, strpos($row['password'], '$$')))).'<br/>';
+				//Decrypt
+				echo mcrypt_decrypt(SAFETY_CIPHER, $key, base64_decode(substr($row['password'], (strpos($row['password'], '$$') + 2))), SAFETY_MODE, base64_decode(substr($row['password'], 0, strpos($row['password'], '$$')))).'<br/>';
             }
             echo '</td>';
             echo '</tr>';

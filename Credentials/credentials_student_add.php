@@ -35,8 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
         $allStudents = $_GET['allStudents'];
     }
 
-    if ($gibbonPersonID == '') {
-        echo "<div class='error'>";
+    if ($gibbonPersonID == '') { echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
@@ -127,13 +126,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field');
-            ?></i></span>
+							<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field'); ?></i></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

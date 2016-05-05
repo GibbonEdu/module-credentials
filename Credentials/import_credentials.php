@@ -91,14 +91,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
 				</tr>
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field');
-        ?></i></span>
+						<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field'); ?></i></span>
 					</td>
 					<td class="right">
 						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>

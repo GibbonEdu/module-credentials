@@ -71,11 +71,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
 				<td class="right">
 					<?php
                     $checked = '';
-    if ($allStudents == 'on') {
-        $checked = 'checked';
-    }
-    echo "<input $checked name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">";
-    ?>
+					if ($allStudents == 'on') {
+						$checked = 'checked';
+					}
+					echo "<input $checked name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">";
+					?>
 				</td>
 			</tr>
 			<tr>
@@ -83,10 +83,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/credentials.php">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 					<?php
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/credentials.php'>".__($guid, 'Clear Search').'</a>';
-    ?>
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/credentials.php'>".__($guid, 'Clear Search').'</a>'; ?>
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
@@ -125,12 +123,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
         $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
+    } catch (PDOException $e) { echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
-    if ($result->rowcount() < 1) {
-        echo "<div class='error'>";
+    if ($result->rowcount() < 1) { echo "<div class='error'>";
         echo __($guid, 'There are no records to display.');
         echo '</div>';
     } else {
@@ -176,8 +172,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+			//COLOR ROW BY STATUS!
+			echo "<tr class=$rowNum>";
             echo '<td>';
             echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
             echo '</td>';
