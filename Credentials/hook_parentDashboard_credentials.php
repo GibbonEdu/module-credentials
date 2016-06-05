@@ -19,14 +19,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
-//Module includes
-include './modules/Credentials/moduleFunctions.php';
+$returnInt = null;
 
-if (isActionAccessible($guid, $connection2, '/modules/Credentials/hook_studentProfile_credentials.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this action.';
-    echo '</div>';
-} else {
-    print getCredentialGrid($guid, $connection2, $gibbonPersonID);
+//Module includes
+$included = false;
+$includes = get_included_files();
+foreach ($includes as $include) {
+    if (strpos(str_replace('\\', '/', $include), '/modules/Credentials/moduleFunctions.php') !== false) {
+        $included = true;
+    }
 }
+if ($included == false) {
+    require $_SESSION[$guid]['absolutePath'].'/modules/Credentials/moduleFunctions.php';
+}
+
+if (isActionAccessible($guid, $connection2, '/modules/Credentials/hook_parentDashboard_credentials.php') == false) {
+    //Acess denied
+    $returnInt .= "<div class='error'>";
+    $returnInt .= 'You do not have access to this action.';
+    $returnInt .= '</div>';
+} else {
+    $returnInt .= getCredentialGrid($guid, $connection2, $gibbonPersonID, true);
+}
+
+return $returnInt;

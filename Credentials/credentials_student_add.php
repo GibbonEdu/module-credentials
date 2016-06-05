@@ -84,27 +84,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">
 					<tr>
 						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Site Title') ?> *</b><br/>
+							<b><?php echo __($guid, 'Website') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input name="title" id="title" maxlength=100 value="" type="text" style="width: 300px">
-							<script type="text/javascript">
-								var title=new LiveValidation('title');
-								title.add(Validate.Presence);
-							 </script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'URL') ?></b><br/>
-						</td>
-						<td class="right">
-							<input name="url" id="url" maxlength=255 value="" type="text" style="width: 300px">
-							<script type="text/javascript">
-								var url=new LiveValidation('url');
-								url.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-							</script>
+                            <select name="credentialsWebsiteID" id="credentialsWebsiteID" class="standardWidth">
+                                <?php
+                                //List gibbon units
+                                try {
+                                    $dataSelect = array();
+                                    $sqlSelect = "SELECT * FROM credentialsWebsite WHERE active='Y' ORDER BY title";
+                                    $resultSelect = $connection2->prepare($sqlSelect);
+                                    $resultSelect->execute($dataSelect);
+                                } catch (PDOException $e) {
+                                }
+                                echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+                                while ($rowSelect = $resultSelect->fetch()) {
+                                    echo "<option value='".$rowSelect['credentialsWebsiteID']."'>".htmlPrep($rowSelect['title']).'</option>';
+                                }
+                                ?>
+                            </select>
+                            <script type="text/javascript">
+                                var credentialsWebsiteID=new LiveValidation('credentialsWebsiteID');
+                                credentialsWebsiteID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+                            </script>
 						</td>
 					</tr>
 					<tr>
@@ -124,6 +127,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
 							<input name="password" id="password" maxlength=50 value="" type="text" style="width: 300px">
 						</td>
 					</tr>
+                    <tr>
+                        <td colspan=2>
+                            <b><?php echo __($guid, 'Notes') ?></b>
+                            <textarea name='notes' id='notes' rows=5 class='standardWidth'></textarea>
+                        </td>
+                    </tr>
 					<tr>
 						<td>
 							<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field'); ?></i></span>

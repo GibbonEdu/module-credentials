@@ -73,7 +73,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
 
             try {
                 $data = array('gibbonPersonID' => $gibbonPersonID);
-                $sql = 'SELECT * FROM credentialsCredential WHERE gibbonPersonID=:gibbonPersonID ORDER BY title';
+                $sql = 'SELECT *
+                    FROM credentialsCredential
+                        JOIN credentialsWebsite ON (credentialsCredential.credentialsWebsiteID=credentialsWebsite.credentialsWebsiteID)
+                    WHERE gibbonPersonID=:gibbonPersonID
+                    ORDER BY title';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

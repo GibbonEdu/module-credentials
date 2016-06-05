@@ -55,9 +55,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
     } else {
         //Proceed!
         //Validate Inputs
-        $title = $_POST['title'];
-        $url = $_POST['url'];
+        $credentialsWebsiteID = $_POST['credentialsWebsiteID'];
         $username = $_POST['username'];
+        $notes = $_POST['notes'];
 
         //Encrypt password
         $passwordFinal = null;
@@ -78,15 +78,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
             $passwordFinal = base64_encode($initVector).ENCRYPTION_DIVIDER_TOKEN.base64_encode($encrypted);
         }
 
-        if ($title == '') {
+        if ($credentialsWebsiteID == '') {
             //Fail 3
             $URL .= '&return=error3';
             header("Location: {$URL}");
         } else {
             //Write to database
             try {
-                $data = array('gibbonPersonID' => $gibbonPersonID, 'title' => $title, 'url' => $url, 'username' => $username, 'password' => $passwordFinal, 'gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()));
-                $sql = 'INSERT INTO credentialsCredential SET title=:title, url=:url, username=:username, password=:password, gibbonPersonID=:gibbonPersonID, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator';
+                $data = array('gibbonPersonID' => $gibbonPersonID, 'credentialsWebsiteID' => $credentialsWebsiteID, 'username' => $username, 'password' => $passwordFinal, 'notes' => $notes, 'gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()));
+                $sql = 'INSERT INTO credentialsCredential SET credentialsWebsiteID=:credentialsWebsiteID, username=:username, password=:password, notes=:notes, gibbonPersonID=:gibbonPersonID, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
