@@ -43,8 +43,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.p
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">
 			<tr>
 				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Site Title') ?> *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<b><?php echo __($guid, 'Website Title') ?> *</b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 				</td>
 				<td class="right">
 					<input name="title" id="title" maxlength=100 value="" type="text" style="width: 300px">

@@ -50,9 +50,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
 			<?php echo __($guid, 'This page allows you to import student credentials from a CSV file. The import will add credentials for sites a user user does not already have (based on name and URL), and update them otherwise. No credentials will be removed. Select the CSV file you wish to use for the import operation.') ?><br/>
 		</p>
 		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_credentials.php&step=2' ?>" enctype="multipart/form-data">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='smallIntBorder' cellspacing='0' style="width: 100%">
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'CSV File') ?> *</b><br/>
 						<span style="font-size: 90%"><i><?php echo __($guid, 'See Notes below for specification.') ?></i></span>
 					</td>
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Field Delimiter') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'String Enclosure') ?> *</b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
@@ -101,9 +101,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
 				</tr>
 			</table>
 		</form>
-		
-		
-		
+
+
+
 		<h4>
 			<?php echo __($guid, 'Notes') ?>
 		</h4>
@@ -112,11 +112,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
 			<li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
 			<li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
 			<li><?php echo __($guid, 'Your import should only include all current students.') ?></li>
-			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li> 
+			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
 				<ol>
 					<li><b><?php echo sprintf(__($guid, '%1$s Username'), $_SESSION[$guid]['systemName']) ?> *</b></li>
-					<li><b><?php echo __($guid, 'Title') ?> *</b> - <?php echo __($guid, 'Name of site.') ?></li>
-					<li><b><?php echo __($guid, 'URL') ?></b></li>
+					<li><b><?php echo __($guid, 'Website') ?> *</b> - <?php echo __($guid, 'Title/name of website. Must exist in Manage Websites section.') ?></li>
 					<li><b><?php echo __($guid, 'Credential Username') ?></b></li>
 					<li><b><?php echo __($guid, 'Password') ?></b> - <?php echo __($guid, 'Plain text. It will be encrypted before being saved in database.') ?></li>
 				</ol>
@@ -157,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
             //Lock tables
             $lockFail = false;
             try {
-                $sql = 'LOCK TABLES credentialsCredential WRITE, gibbonPerson WRITE';
+                $sql = 'LOCK TABLES credentialsCredential WRITE, credentialsWebsite WRITE, gibbonPerson WRITE';
                 $result = $connection2->query($sql);
             } catch (PDOException $e) {
                 $lockFail = true;
@@ -189,9 +188,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                         if ($data[0] != '' and $data[1] != '') {
                             $users[$userSuccessCount]['username'] = $data[0];
                             $users[$userSuccessCount]['title'] = $data[1];
-                            $users[$userSuccessCount]['url'] = $data[2];
-                            $users[$userSuccessCount]['username2'] = $data[3];
-                            $users[$userSuccessCount]['password'] = $data[4];
+                            $users[$userSuccessCount]['username2'] = $data[2];
+                            $users[$userSuccessCount]['password'] = $data[3];
                             ++$userSuccessCount;
                         } else {
                             echo "<div class='error'>";
@@ -235,10 +233,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                     echo '</h4>';
                     foreach ($users as $user) {
                         $checkFail = false;
-                        //Check if credential exists for user is 
+                        //Check if credential exists for user
                         try {
-                            $data = array('username' => $user['username'], 'title' => $user['title'], 'url' => $user['url']);
-                            $sql = 'SELECT * FROM credentialsCredential JOIN gibbonPerson ON (credentialsCredential.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.username=:username AND credentialsCredential.title=:title AND credentialsCredential.url=:url';
+                            $data = array('username' => $user['username'], 'title' => $user['title']);
+                            $sql = 'SELECT *
+                                FROM credentialsCredential
+                                    JOIN credentialsWebsite ON (credentialsCredential.credentialsWebsiteID=credentialsWebsite.credentialsWebsiteID)
+                                    JOIN gibbonPerson ON (credentialsCredential.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                WHERE gibbonPerson.username=:username
+                                    AND credentialsWebsite.title=:title';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
@@ -265,8 +268,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                             if ($result->rowCount() < 1) { //INSERT
                                 $credentialInsertFail = false;
                                 try {
-                                    $data = array('username' => $user['username'], 'title' => $user['title'], 'url' => $user['url'], 'username2' => $user['username2'], 'password' => $passwordFinal, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()));
-                                    $sql = 'INSERT INTO credentialsCredential SET gibbonPersonID=(SELECT gibbonPersonID FROM gibbonPerson WHERE username=:username), title=:title, url=:url, username=:username2, password=:password, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator';
+                                    $data = array('username' => $user['username'], 'title' => $user['title'], 'username2' => $user['username2'], 'password' => $passwordFinal, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()));
+                                    $sql = 'INSERT INTO credentialsCredential SET gibbonPersonID=(SELECT gibbonPersonID FROM gibbonPerson WHERE username=:username), credentialsWebsiteID=(SELECT credentialsWebsiteID FROM credentialsWebsite WHERE title=:title), username=:username2, password=:password, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator';
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
                                 } catch (PDOException $e) {
@@ -276,7 +279,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                                 //Spit out results
                                 if ($credentialInsertFail == true) {
                                     echo "<div class='error'>";
-                                    echo $e->getMessage();
                                     echo __($guid, 'There was an error with credential:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
                                     echo '</div>';
                                 } else {
@@ -286,13 +288,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                                 }
                             } else { //UPDATE
                                 $credentialInsertFail = false;
+                                $row = $result->fetch();
                                 try {
-                                    $data = array('username' => $user['username'], 'title' => $user['title'], 'url' => $user['url'], 'username2' => $user['username2'], 'password' => $passwordFinal);
-                                    $sql = 'UPDATE credentialsCredential SET username=:username2, password=:password WHERE gibbonPersonID=(SELECT gibbonPersonID FROM gibbonPerson WHERE username=:username) AND title=:title AND url=:url';
+                                    $data = array('credentialsCredentialID' => $row['credentialsCredentialID'], 'username2' => $user['username2'], 'password' => $passwordFinal);
+                                    $sql = 'UPDATE credentialsCredential SET username=:username2, password=:password WHERE credentialsCredentialID=:credentialsCredentialID';
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
                                 } catch (PDOException $e) {
                                     $credentialInsertFail = true;
+                                    echo $e->getMessage();
                                 }
 
                                 //Spit out results

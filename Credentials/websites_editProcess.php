@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
             header("Location: {$URL}");
         } else {
             $row = $result->fetch();
-            
+
             //Validate Inputs
             $title = $_POST['title'];
             $active = $_POST['active'];
@@ -77,56 +77,73 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
-                //Sort out logo
-                $imageFail = false;
-                $logo = $row['logo'];
-                if ($_FILES['file1']['tmp_name'] != '') {
-                    $time = time();
-                    //Check for folder in uploads based on today's date
-                    $path = $_SESSION[$guid]['absolutePath'];
-                    if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                        mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                    }
-
-                    $unique = false;
-                    $count = 0;
-                    while ($unique == false and $count < 100) {
-                        $suffix = randomPassword(16);
-                        if ($count == 0) {
-                            $logo = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$title."_$suffix".strrchr($_FILES['file1']['name'], '.');
-                        } else {
-                            $logo = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$title."_$suffix"."_$count".strrchr($_FILES['file1']['name'], '.');
-                        }
-
-                        if (!(file_exists($path.'/'.$logo))) {
-                            $unique = true;
-                        }
-                        ++$count;
-                    }
-                    if (!(move_uploaded_file($_FILES['file1']['tmp_name'], $path.'/'.$logo))) {
-                        $logo = '';
-                        $imageFail = true;
-                    }
-                }
-
-                //Write to database
+                //Check unique inputs for uniquness
                 try {
-                    $data = array('title' => $title, 'active' => $active, 'url' => $url, 'logo' => $logo, 'notes' => $notes, 'credentialsWebsiteID' => $credentialsWebsiteID);
-                    $sql = 'UPDATE credentialsWebsite SET title=:title, active=:active, url=:url, logo=:logo, notes=:notes WHERE credentialsWebsiteID=:credentialsWebsiteID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                    $dataCheck = array('title' => $title, 'credentialsWebsiteID' => $credentialsWebsiteID);
+                    $sqlCheck = 'SELECT * FROM credentialsWebsite WHERE title=:title AND NOT credentialsWebsiteID=:credentialsWebsiteID';
+                    $resultCheck = $connection2->prepare($sqlCheck);
+                    $resultCheck->execute($dataCheck);
                 } catch (PDOException $e) {
-                    echo $e->getMessage();
-                    exit();
-                    //Fail 2
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
                     exit();
                 }
 
-                //Success 0
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
+                if ($resultCheck->rowCount() > 0) {
+                    $URL .= '&return=error3';
+                    header("Location: {$URL}");
+                } else {
+                    //Sort out logo
+                    $imageFail = false;
+                    $logo = $row['logo'];
+                    if ($_FILES['file1']['tmp_name'] != '') {
+                        $time = time();
+                        //Check for folder in uploads based on today's date
+                        $path = $_SESSION[$guid]['absolutePath'];
+                        if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
+                            mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
+                        }
+
+                        $unique = false;
+                        $count = 0;
+                        while ($unique == false and $count < 100) {
+                            $suffix = randomPassword(16);
+                            if ($count == 0) {
+                                $logo = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$title."_$suffix".strrchr($_FILES['file1']['name'], '.');
+                            } else {
+                                $logo = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$title."_$suffix"."_$count".strrchr($_FILES['file1']['name'], '.');
+                            }
+
+                            if (!(file_exists($path.'/'.$logo))) {
+                                $unique = true;
+                            }
+                            ++$count;
+                        }
+                        if (!(move_uploaded_file($_FILES['file1']['tmp_name'], $path.'/'.$logo))) {
+                            $logo = '';
+                            $imageFail = true;
+                        }
+                    }
+
+                    //Write to database
+                    try {
+                        $data = array('title' => $title, 'active' => $active, 'url' => $url, 'logo' => $logo, 'notes' => $notes, 'credentialsWebsiteID' => $credentialsWebsiteID);
+                        $sql = 'UPDATE credentialsWebsite SET title=:title, active=:active, url=:url, logo=:logo, notes=:notes WHERE credentialsWebsiteID=:credentialsWebsiteID';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        echo $e->getMessage();
+                        exit();
+                        //Fail 2
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
+                    //Success 0
+                    $URL .= '&return=success0';
+                    header("Location: {$URL}");
+                }
             }
         }
     }

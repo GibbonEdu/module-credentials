@@ -42,5 +42,12 @@ UPDATE gibbonAction SET category='Credentials' WHERE (name='Manage Credentials' 
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Credentials'), 'View Credentials in Parent Dashboard', 0, '', 'Allows parents to see login details, including passwords, for their children in their family.', 'hook_parentDashboard_credentials.php', '', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N') ;end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '4', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Credentials' AND gibbonAction.name='View Credentials in Parent Dashboard'));end
 INSERT INTO `gibbonHook` (`gibbonHookID`, `name`, `type`, `options`, gibbonModuleID) VALUES (NULL, 'Credentials', 'Parental Dashboard', 'a:3:{s:16:\"sourceModuleName\";s:11:\"Credentials\";s:18:\"sourceModuleAction\";s:36:\"View Credentials in Parent Dashboard\";s:19:\"sourceModuleInclude\";s:36:\"hook_parentDashboard_credentials.php\";}', (SELECT gibbonModuleID FROM gibbonModule WHERE name='Credentials'));end
-
 ";
+
+//v2.0.01
+++$count;
+$sql[$count][0] = '2.0.01';
+$sql[$count][1] = '
+ALTER TABLE `credentialsWebsite` ADD UNIQUE `title` (`title`);end
+ALTER TABLE `credentialsCredential` ADD UNIQUE `personWebsite` (`credentialsWebsiteID`, `gibbonPersonID`);
+';
