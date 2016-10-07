@@ -60,3 +60,8 @@ UPDATE gibbonModule SET category='People' WHERE name='Credentials';end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Credentials'), 'View Credentials', 0, 'Credentials', 'Allows users to see login details, including passwords, for all students in school.', 'credentials_view.php, credentials_view_student.php', 'credentials_view.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Credentials' AND gibbonAction.name='View Credentials'));end
 ";
+
+//2.1.01
+++$count;
+$sql[$count][0] = '2.1.01';
+$sql[$count][1] = "";
