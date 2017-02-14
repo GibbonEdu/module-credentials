@@ -153,10 +153,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                     }
                     echo '</td>';
                     echo '<td>';
-                    if ($row['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID']) {
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/credentials_student_edit.php&search='.$search.'&credentialsCredentialID='.$row['credentialsCredentialID']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/credentials_student_delete.php&search='.$search.'&credentialsCredentialID='.$row['credentialsCredentialID']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                    }
                     echo '</td>';
                     echo '</tr>';
                 }

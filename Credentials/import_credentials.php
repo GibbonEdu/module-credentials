@@ -118,6 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
 					<li><b><?php echo __($guid, 'Website') ?> *</b> - <?php echo __($guid, 'Title/name of website. Must exist in Manage Websites section.') ?></li>
 					<li><b><?php echo __($guid, 'Credential Username') ?></b></li>
 					<li><b><?php echo __($guid, 'Password') ?></b> - <?php echo __($guid, 'Plain text. It will be encrypted before being saved in database.') ?></li>
+                    <li><b><?php echo __($guid, 'Notes') ?></b></li>
 				</ol>
 			</li>
 			<li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
@@ -190,6 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                             $users[$userSuccessCount]['title'] = $data[1];
                             $users[$userSuccessCount]['username2'] = $data[2];
                             $users[$userSuccessCount]['password'] = $data[3];
+                            $users[$userSuccessCount]['notes'] = $data[4];
                             ++$userSuccessCount;
                         } else {
                             echo "<div class='error'>";
@@ -268,8 +270,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                             if ($result->rowCount() < 1) { //INSERT
                                 $credentialInsertFail = false;
                                 try {
-                                    $data = array('username' => $user['username'], 'title' => $user['title'], 'username2' => $user['username2'], 'password' => $passwordFinal, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()));
-                                    $sql = 'INSERT INTO credentialsCredential SET gibbonPersonID=(SELECT gibbonPersonID FROM gibbonPerson WHERE username=:username), credentialsWebsiteID=(SELECT credentialsWebsiteID FROM credentialsWebsite WHERE title=:title), username=:username2, password=:password, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator';
+                                    $data = array('username' => $user['username'], 'title' => $user['title'], 'username2' => $user['username2'], 'password' => $passwordFinal, 'notes' => $user['notes'], 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()));
+                                    $sql = 'INSERT INTO credentialsCredential SET gibbonPersonID=(SELECT gibbonPersonID FROM gibbonPerson WHERE username=:username), credentialsWebsiteID=(SELECT credentialsWebsiteID FROM credentialsWebsite WHERE title=:title), username=:username2, password=:password, notes=:notes, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator';
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
                                 } catch (PDOException $e) {
@@ -290,13 +292,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                                 $credentialInsertFail = false;
                                 $row = $result->fetch();
                                 try {
-                                    $data = array('credentialsCredentialID' => $row['credentialsCredentialID'], 'username2' => $user['username2'], 'password' => $passwordFinal);
-                                    $sql = 'UPDATE credentialsCredential SET username=:username2, password=:password WHERE credentialsCredentialID=:credentialsCredentialID';
+                                    $data = array('credentialsCredentialID' => $row['credentialsCredentialID'], 'username2' => $user['username2'], 'password' => $passwordFinal, 'notes' => $user['notes']);
+                                    $sql = 'UPDATE credentialsCredential SET username=:username2, password=:password, notes=:notes WHERE credentialsCredentialID=:credentialsCredentialID';
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
                                 } catch (PDOException $e) {
                                     $credentialInsertFail = true;
-                                    echo $e->getMessage();
                                 }
 
                                 //Spit out results
