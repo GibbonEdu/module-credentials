@@ -71,32 +71,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.p
         } else {
             //Deal with file upload
             $logo = '';
-            $imageFail = false;
-            if ($_FILES['file1']['tmp_name'] != '') {
-                $time = time();
-                //Check for folder in uploads based on today's date
-                $path = $_SESSION[$guid]['absolutePath'];
-                if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                    mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                }
-                $unique = false;
-                $count = 0;
-                while ($unique == false and $count < 100) {
-                    $suffix = randomPassword(16);
-                    if ($count == 0) {
-                        $logo = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$title."_$suffix".strrchr($_FILES['file1']['name'], '.');
-                    } else {
-                        $logo = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$title."_$suffix"."_$count".strrchr($_FILES['file1']['name'], '.');
-                    }
+            $partialFail = false;
 
-                    if (!(file_exists($path.'/'.$logo))) {
-                        $unique = true;
-                    }
-                    ++$count;
-                }
-                if (!(move_uploaded_file($_FILES['file1']['tmp_name'], $path.'/'.$logo))) {
-                    $logo = '';
-                    $imageFail = true;
+            //Move attached image  file, if there is one
+            if (!empty($_FILES['file1']['tmp_name'])) {
+                $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                $fileUploader->getFileExtensions('Graphics/Design');
+
+                $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
+
+                // Upload the file, return the /uploads relative path
+                $logo = $fileUploader->uploadFromPost($file, $title);
+
+                if (empty($logo)) {
+                    $partialFail = true;
                 }
             }
 
@@ -116,8 +104,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.p
             $AI = str_pad($connection2->lastInsertID(), 4, '0', STR_PAD_LEFT);
 
             //Success 0
-            $URL .= '&return=success0&editID='.$AI;
-            header("Location: {$URL}");
+            if ($partialFail == true) {
+                $URL .= '&return=warning1';
+                header("Location: {$URL}");
+            } else {
+                $URL .= "&return=success0&editID=$AI";
+                header("Location: {$URL}");
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ $description = 'Credentials is a module for storing student login details, and m
 $entryURL = 'credentials.php';
 $type = 'Additional';
 $category = 'Admin';
-$version = '2.1.02';
+$version = '2.1.03';
 $author = 'Ross Parker';
 $url = 'http://rossparker.org';
 
