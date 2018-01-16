@@ -77,6 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                     FROM credentialsCredential
                         JOIN credentialsWebsite ON (credentialsCredential.credentialsWebsiteID=credentialsWebsite.credentialsWebsiteID)
                     WHERE gibbonPersonID=:gibbonPersonID
+                        AND active=\'Y\'
                     ORDER BY title';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);

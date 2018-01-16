@@ -27,6 +27,7 @@ function getCredentialGrid($guid, $connection2, $gibbonPersonID, $mini = false)
             FROM credentialsCredential
                 JOIN credentialsWebsite ON (credentialsCredential.credentialsWebsiteID=credentialsWebsite.credentialsWebsiteID)
             WHERE gibbonPersonID=:gibbonPersonID
+                AND credentialsWebsite.active=\'Y\'
             ORDER BY title';
         $result = $connection2->prepare($sql);
         $result->execute($data);
