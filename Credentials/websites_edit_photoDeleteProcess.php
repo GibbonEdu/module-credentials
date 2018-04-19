@@ -18,20 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-include '../../functions.php';
-include '../../config.php';
+include '../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
-
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $credentialsWebsiteID = $_GET['credentialsWebsiteID'];
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Credentials/websites_edit.php&credentialsWebsiteID=$credentialsWebsiteID";

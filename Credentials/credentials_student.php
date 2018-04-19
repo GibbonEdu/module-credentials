@@ -17,10 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_student.php') == false) {
     //Acess denied
