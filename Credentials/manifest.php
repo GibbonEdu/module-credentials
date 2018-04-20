@@ -137,6 +137,22 @@ $actionRows[4]['categoryPermissionStudent'] = 'N';
 $actionRows[4]['categoryPermissionParent'] = 'Y';
 $actionRows[4]['categoryPermissionOther'] = 'N';
 
+$actionRows[5]['name'] = 'View Credentials';
+$actionRows[5]['precedence'] = '0';
+$actionRows[5]['category'] = 'Credentials';
+$actionRows[5]['description'] = 'Allows users to see login details, including passwords, for all students in school.';
+$actionRows[5]['URLList'] = 'credentials_view.php, credentials_view_student.php';
+$actionRows[5]['entryURL'] = 'credentials_view.php';
+$actionRows[5]['defaultPermissionAdmin'] = 'Y';
+$actionRows[5]['defaultPermissionTeacher'] = 'N';
+$actionRows[5]['defaultPermissionStudent'] = 'N';
+$actionRows[5]['defaultPermissionParent'] = 'N';
+$actionRows[5]['defaultPermissionSupport'] = 'N';
+$actionRows[5]['categoryPermissionStaff'] = 'Y';
+$actionRows[5]['categoryPermissionStudent'] = 'N';
+$actionRows[5]['categoryPermissionParent'] = 'N';
+$actionRows[5]['categoryPermissionOther'] = 'N';
+
 $array = array();
 $array['sourceModuleName'] = 'Credentials';
 $array['sourceModuleAction'] = 'View Credentials in Student Profile';

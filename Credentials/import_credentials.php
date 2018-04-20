@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credentials.php') == false) {
     //Acess denied
@@ -42,67 +42,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
 
     //STEP 1, SELECT TERM
     if ($step == 1) {
+
+        echo '<h2>';
+        echo __('Step 1 - Select CSV Files');
+        echo '</h2>';
+        echo '<p>';
+        echo __('This page allows you to import student credentials from a CSV file. The import will add credentials for sites a user user does not already have (based on name and URL), and update them otherwise. No credentials will be removed. Select the CSV file you wish to use for the import operation.');
+        echo '</p>';
+
+        $form = Form::create('importUserPhotos', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_credentials.php&step=2');
+
+        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+        $row = $form->addRow();
+            $row->addLabel('file', __('CSV File'))->description(__('See Notes below for specification.'));
+            $row->addFileUpload('file')->isRequired();
+
+        $row = $form->addRow();
+            $row->addLabel('fieldDelimiter', __('Field Delimiter'));
+            $row->addTextField('fieldDelimiter')->isRequired()->maxLength(1)->setValue(',');
+
+        $row = $form->addRow();
+            $row->addLabel('stringEnclosure', __('String Enclosure'));
+            $row->addTextField('stringEnclosure')->isRequired()->maxLength(1)->setValue('"');
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSubmit();
+
+        echo $form->getOutput();
         ?>
-		<h2>
-			<?php echo __($guid, 'Step 1 - Select CSV Files') ?>
-		</h2>
-		<p>
-			<?php echo __($guid, 'This page allows you to import student credentials from a CSV file. The import will add credentials for sites a user user does not already have (based on name and URL), and update them otherwise. No credentials will be removed. Select the CSV file you wish to use for the import operation.') ?><br/>
-		</p>
-		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_credentials.php&step=2' ?>" enctype="multipart/form-data">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">
-				<tr>
-					<td style='width: 275px'>
-						<b><?php echo __($guid, 'CSV File') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php echo __($guid, 'See Notes below for specification.') ?></i></span>
-					</td>
-					<td class="right">
-						<input type="file" name="file" id="file" size="chars">
-						<script type="text/javascript">
-							var file=new LiveValidation('file');
-							file.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Field Delimiter') ?> *</b><br/>
-					</td>
-					<td class="right">
-						<input type="text" style="width: 300px" name="fieldDelimiter" value="," maxlength=1>
-						<script type="text/javascript">
-							var fieldDelimiter=new LiveValidation('fieldDelimiter');
-							fieldDelimiter.add(Validate.Presence);
-						 </script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'String Enclosure') ?> *</b><br/>
-						<span style="font-size: 90%"><i></i></span>
-					</td>
-					<td class="right">
-						<input type="text" style="width: 300px" name="stringEnclosure" value='"' maxlength=1>
-						<script type="text/javascript">
-							var stringEnclosure=new LiveValidation('stringEnclosure');
-							stringEnclosure.add(Validate.Presence);
-						 </script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field'); ?></i></span>
-					</td>
-					<td class="right">
-						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
-						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					</td>
-				</tr>
-			</table>
-		</form>
-
-
 
 		<h4>
 			<?php echo __($guid, 'Notes') ?>
