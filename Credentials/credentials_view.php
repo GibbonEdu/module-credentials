@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -31,59 +33,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_vi
     echo __($guid, 'Search');
     echo '</h2>';
 
-    $gibbonPersonID = null;
-    if (isset($_GET['gibbonPersonID'])) {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
-    }
-    $search = null;
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
-    }
-    $allStudents = '';
-    if (isset($_GET['allStudents'])) {
-        $allStudents = $_GET['allStudents'];
-    }
+    $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
+    $search = isset($_GET['search'])? $_GET['search'] : '';
+    $allStudents = isset($_GET['allStudents'])? $_GET['allStudents'] : '';
 
-    ?>
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='noIntBorder' cellspacing='0' style="width: 100%">
-			<tr><td style="width: 30%"></td><td></td></tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Search For') ?></b><br/>
-					<span style="font-size: 90%"><i><?php echo __($guid, 'Preferred, surname, username.') ?></i></span>
-				</td>
-				<td class="right">
-					<input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" style="width: 300px">
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'All Students') ?></b><br/>
-					<span style="font-size: 90%"><i><?php echo __($guid, 'Include all students, regardless of status and current enrolment. Some data may not display.') ?></i></span>
-				</td>
-				<td class="right">
-					<?php
-                    $checked = '';
-					if ($allStudents == 'on') {
-						$checked = 'checked';
-					}
-					echo "<input $checked name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">";
-					?>
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/credentials_view.php">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<?php
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/credentials_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/credentials_view.php');
+
+    $row = $form->addRow();
+        $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
+        $row->addTextField('search')->setValue($search);
+
+    $row = $form->addRow();
+        $row->addLabel('allStudents', __('All Students'))->description(__('Include all students, regardless of status and current enrolment. Some data may not display.'));
+        $row->addCheckbox('allStudents')->checked($allStudents);
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+
+    echo $form->getOutput();
 
     echo '<h2>';
     echo __($guid, 'Choose A Student');

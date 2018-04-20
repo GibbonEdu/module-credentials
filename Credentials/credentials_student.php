@@ -24,15 +24,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
     echo __($guid, 'You do not have access to this action.');
     echo '</div>';
 } else {
-    $gibbonPersonID = $_GET['gibbonPersonID'];
-    $search = null;
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
-    }
-    $allStudents = '';
-    if (isset($_GET['allStudents'])) {
-        $allStudents = $_GET['allStudents'];
-    }
+
+    $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
+    $search = isset($_GET['search'])? $_GET['search'] : '';
+    $allStudents = isset($_GET['allStudents'])? $_GET['allStudents'] : '';
 
     if ($gibbonPersonID == false) { echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
@@ -151,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                     echo '</td>';
                     echo '<td>';
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/credentials_student_edit.php&search='.$search.'&credentialsCredentialID='.$row['credentialsCredentialID']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/credentials_student_delete.php&search='.$search.'&credentialsCredentialID='.$row['credentialsCredentialID']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/credentials_student_delete.php&search='.$search.'&credentialsCredentialID='.$row['credentialsCredentialID']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
                     echo '</td>';
                     echo '</tr>';
                 }

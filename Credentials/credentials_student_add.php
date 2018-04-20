@@ -17,21 +17,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_student_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
     echo '</div>';
 } else {
-    $gibbonPersonID = $_GET['gibbonPersonID'];
-    $search = null;
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
-    }
-    $allStudents = '';
-    if (isset($_GET['allStudents'])) {
-        $allStudents = $_GET['allStudents'];
-    }
+    $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
+    $search = isset($_GET['search'])? $_GET['search'] : '';
+    $allStudents = isset($_GET['allStudents'])? $_GET['allStudents'] : '';
 
     if ($gibbonPersonID == '') { echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
@@ -77,74 +73,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 echo '</div>';
             }
 
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/credentials_student_addProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Website') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
-						</td>
-						<td class="right">
-                            <select name="credentialsWebsiteID" id="credentialsWebsiteID" class="standardWidth">
-                                <?php
-                                //List gibbon units
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = "SELECT * FROM credentialsWebsite WHERE active='Y' ORDER BY title";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-                                echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    echo "<option value='".$rowSelect['credentialsWebsiteID']."'>".htmlPrep($rowSelect['title']).'</option>';
-                                }
-                                ?>
-                            </select>
-                            <script type="text/javascript">
-                                var credentialsWebsiteID=new LiveValidation('credentialsWebsiteID');
-                                credentialsWebsiteID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-                            </script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Username') ?></b><br/>
-						</td>
-						<td class="right">
-							<input name="username" id="username" maxlength=50 value="" type="text" style="width: 300px">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Password') ?></b><br/>
-							<span style="font-size: 90%"><i><?php echo __($guid, 'Saved using encryption, but displayed in plain text in the system.') ?></i></span>
-						</td>
-						<td class="right">
-							<input name="password" id="password" maxlength=50 value="" type="text" style="width: 300px">
-						</td>
-					</tr>
-                    <tr>
-                        <td colspan=2>
-                            <b><?php echo __($guid, 'Notes') ?></b>
-                            <textarea name='notes' id='notes' rows=5 class='standardWidth'></textarea>
-                        </td>
-                    </tr>
-					<tr>
-						<td>
-							<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field'); ?></i></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/credentials_student_addProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search.'&allStudents='.$allStudents);
+                
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+            $sql = "SELECT credentialsWebsiteID as value, title as name FROM credentialsWebsite WHERE active='Y' ORDER BY title";
+            $row = $form->addRow();
+                $row->addLabel('credentialsWebsiteID', __('Website'));
+                $row->addSelect('credentialsWebsiteID')->fromQuery($pdo, $sql)->isRequired()->placeholder();
+
+            $row = $form->addRow();
+                $row->addLabel('username', __('Username'));
+                $row->addTextField('username')->maxLength(50);
+
+            $row = $form->addRow();
+                $row->addLabel('password', __('Password'))->description(__('Saved using encryption, but displayed in plain text in the system.'));
+                $row->addTextField('password')->maxLength(50);
+
+            $row = $form->addRow();
+                $row->addLabel('notes', __('Notes'));
+                $row->addTextArea('notes')->setRows(5);
+                
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
         }
     }
 }
-?>
