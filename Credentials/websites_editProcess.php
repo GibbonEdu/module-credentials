@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
                     header("Location: {$URL}");
                 } else {
                     //Sort out logo
-                    $logo = $row['logo'];
+                    $logo = isset($_POST['logo'])? $_POST['logo'] : '';
                     $partialFail = false;
 
                     //Move attached image  file, if there is one
