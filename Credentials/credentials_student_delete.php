@@ -91,13 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 } else {
                     //Let's go!
                     $row = $result->fetch();
-
-                    if ($_GET['search'] != '') {
-                        echo "<div class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Credentials/credentials_student.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__($guid, 'Back').'</a>';
-                        echo '</div>';
-                    }
-
+                    
                     $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/credentials_student_deleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&credentialsCredentialID=$credentialsCredentialID");
                     echo $form->getOutput();
                 }
