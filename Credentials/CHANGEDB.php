@@ -80,3 +80,8 @@ $sql[$count][1] = "";
 ++$count;
 $sql[$count][0] = '2.1.04';
 $sql[$count][1] = "";
+
+//2.2.00
+++$count;
+$sql[$count][0] = '2.2.00';
+$sql[$count][1] = "";
