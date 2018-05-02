@@ -25,7 +25,7 @@ $description = 'Credentials is a module for storing student login details, and m
 $entryURL = 'credentials.php';
 $type = 'Additional';
 $category = 'Admin';
-$version = '2.2.00';
+$version = '2.3.00';
 $author = 'Ross Parker';
 $url = 'http://rossparker.org';
 
@@ -41,7 +41,7 @@ $moduleTables[0] = 'CREATE TABLE `credentialsCredential` (
   `timestampCreator` datetime NOT NULL,
    PRIMARY KEY (`credentialsCredentialID`),
    UNIQUE `personWebsite` (`credentialsWebsiteID`, `gibbonPersonID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
 
 $moduleTables[1] = 'CREATE TABLE `credentialsWebsite` (
 `credentialsWebsiteID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,
@@ -54,7 +54,7 @@ $moduleTables[1] = 'CREATE TABLE `credentialsWebsite` (
   `timestampCreator` datetime NOT NULL,
    PRIMARY KEY (`credentialsWebsiteID`),
    UNIQUE KEY `title` (`title`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
 
 //Action rows
 $actionRows[0]['name'] = 'Manage Credentials';
