@@ -22,12 +22,12 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credentials.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Import Credentials').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Import Credentials').'</div>';
     echo '</div>';
 
     $step = null;
@@ -74,30 +74,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
         ?>
 
 		<h4>
-			<?php echo __($guid, 'Notes') ?>
+			<?php echo __('Notes') ?>
 		</h4>
 		<ol>
-			<li style='color: #c00; font-weight: bold'><?php echo __($guid, 'THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
-			<li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
-			<li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
-			<li><?php echo __($guid, 'Your import should only include all current students.') ?></li>
-			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
+			<li style='color: #c00; font-weight: bold'><?php echo __('THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+			<li><?php echo __('You may only submit CSV files.') ?></li>
+			<li><?php echo __('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+			<li><?php echo __('Your import should only include all current students.') ?></li>
+			<li><?php echo __('The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
 				<ol>
-					<li><b><?php echo sprintf(__($guid, '%1$s Username'), $_SESSION[$guid]['systemName']) ?> *</b></li>
-					<li><b><?php echo __($guid, 'Website') ?> *</b> - <?php echo __($guid, 'Title/name of website. Must exist in Manage Websites section.') ?></li>
-					<li><b><?php echo __($guid, 'Credential Username') ?></b></li>
-					<li><b><?php echo __($guid, 'Password') ?></b> - <?php echo __($guid, 'Plain text. It will be encrypted before being saved in database.') ?></li>
-                    <li><b><?php echo __($guid, 'Notes') ?></b></li>
+					<li><b><?php echo sprintf(__('%1$s Username'), $_SESSION[$guid]['systemName']) ?> *</b></li>
+					<li><b><?php echo __('Website') ?> *</b> - <?php echo __('Title/name of website. Must exist in Manage Websites section.') ?></li>
+					<li><b><?php echo __('Credential Username') ?></b></li>
+					<li><b><?php echo __('Password') ?></b> - <?php echo __('Plain text. It will be encrypted before being saved in database.') ?></li>
+                    <li><b><?php echo __('Notes') ?></b></li>
 				</ol>
 			</li>
-			<li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
+			<li><?php echo __('Do not include a header row in the CSV files.') ?></li>
 		</ol>
 	<?php
 
     } elseif ($step == 2) {
         ?>
 		<h2>
-			<?php echo __($guid, 'Step 2 - Data Check & Confirm') ?>
+			<?php echo __('Step 2 - Data Check & Confirm') ?>
 		</h2>
 		<?php
 
@@ -105,14 +105,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
         if (($_FILES['file']['type'] != 'text/csv') and ($_FILES['file']['type'] != 'text/comma-separated-values') and ($_FILES['file']['type'] != 'text/x-comma-separated-values') and ($_FILES['file']['type'] != 'application/vnd.ms-excel')) {
             ?>
 			<div class='error'>
-				<?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
+				<?php echo sprintf(__('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
 			</div>
 			<?php
 
         } elseif (($_POST['fieldDelimiter'] == '') or ($_POST['stringEnclosure'] == '')) {
             ?>
 			<div class='error'>
-				<?php echo __($guid, 'Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
+				<?php echo __('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
 			</div>
 			<?php
 
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
 
             //PREPARE TABLES
             echo '<h4>';
-            echo __($guid, 'Prepare Database Tables');
+            echo __('Prepare Database Tables');
             echo '</h4>';
             //Lock tables
             $lockFail = false;
@@ -134,11 +134,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
             }
             if ($lockFail == true) {
                 echo "<div class='error'>";
-                echo __($guid, 'The database could not be locked for use.');
+                echo __('The database could not be locked for use.');
                 echo '</div>';
             } elseif ($lockFail == false) {
                 echo "<div class='success'>";
-                echo __($guid, 'The database was successfully locked.');
+                echo __('The database was successfully locked.');
                 echo '</div>';
             }
 
@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                 //READ IN DATA
                 if ($proceed == true) {
                     echo '<h4>';
-                    echo __($guid, 'File Import');
+                    echo __('File Import');
                     echo '</h4>';
                     $importFail = false;
                     $csvFile = $_FILES['file']['tmp_name'];
@@ -164,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                             ++$userSuccessCount;
                         } else {
                             echo "<div class='error'>";
-                            echo sprintf(__($guid, 'Student with username %1$s had some information malformations.'), $data[0]);
+                            echo sprintf(__('Student with username %1$s had some information malformations.'), $data[0]);
                             echo '</div>';
                         }
                         ++$userCount;
@@ -172,21 +172,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                     fclose($handle);
                     if ($userSuccessCount == 0) {
                         echo "<div class='error'>";
-                        echo __($guid, 'No useful credentials were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.');
+                        echo __('No useful credentials were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.');
                         echo '</div>';
                         $proceed = false;
                     } elseif ($userSuccessCount < $userCount) {
                         echo "<div class='error'>";
-                        echo __($guid, 'Some credentials could not be successfully read or used, so the import will be aborted.');
+                        echo __('Some credentials could not be successfully read or used, so the import will be aborted.');
                         echo '</div>';
                         $proceed = false;
                     } elseif ($userSuccessCount == $userCount) {
                         echo "<div class='success'>";
-                        echo __($guid, 'All credentials could be read and used, so the import will proceed.');
+                        echo __('All credentials could be read and used, so the import will proceed.');
                         echo '</div>';
                     } else {
                         echo "<div class='error'>";
-                        echo __($guid, 'An unknown error occured, so the import will be aborted.');
+                        echo __('An unknown error occured, so the import will be aborted.');
                         echo '</div>';
                         $proceed = false;
                     }
@@ -200,7 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
 
                 if ($proceed == true) {
                     echo '<h4>';
-                    echo __($guid, 'Enrol All Students');
+                    echo __('Enrol All Students');
                     echo '</h4>';
                     foreach ($users as $user) {
                         $checkFail = false;
@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
 
                         if ($checkFail == true) {
                             echo "<div class='error'>";
-                            echo __($guid, 'There was an error with credential:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
+                            echo __('There was an error with credential:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
                             echo '</div>';
                         } else {
                             $passwordFinal = null;
@@ -250,11 +250,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                                 //Spit out results
                                 if ($credentialInsertFail == true) {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'There was an error with credential:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
+                                    echo __('There was an error with credential:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
                                     echo '</div>';
                                 } else {
                                     echo "<div class='success'>";
-                                    echo __($guid, 'The following credential was successfully inserted:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
+                                    echo __('The following credential was successfully inserted:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
                                     echo '</div>';
                                 }
                             } else { //UPDATE
@@ -272,11 +272,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                                 //Spit out results
                                 if ($credentialInsertFail == true) {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'There was an error with credential:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
+                                    echo __('There was an error with credential:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
                                     echo '</div>';
                                 } else {
                                     echo "<div class='success'>";
-                                    echo __($guid, 'The following credential was successfully updated:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
+                                    echo __('The following credential was successfully updated:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
                                     echo '</div>';
                                 }
                             }

@@ -35,25 +35,25 @@ function getCredentialGrid($guid, $connection2, $gibbonPersonID, $mini = false)
     }
 
     if ($result->rowCount() < 1) { $return .= "<div class='error'>";
-        $return .= __($guid, 'There are no records to display.');
+        $return .= __('There are no records to display.');
         $return .= '</div>';
     } else {
         $return .= "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
         $return .= "<tr class='head'>";
         $return .= '<th>';
-        $return .= __($guid, 'Logo').'<br/>';
+        $return .= __('Logo').'<br/>';
         $return .= '</th>';
         $return .= '<th>';
-        $return .= __($guid, 'Website').'<br/>';
+        $return .= __('Website').'<br/>';
         $return .= '</th>';
         $return .= '<th>';
-        $return .= __($guid, 'Username').'<br/>';
+        $return .= __('Username').'<br/>';
         $return .= '</th>';
         $return .= '<th>';
-        $return .= __($guid, 'Password').'<br/>';
+        $return .= __('Password').'<br/>';
         $return .= '</th>';
         $return .= '<th>';
-        $return .= __($guid, 'Action').'<br/>';
+        $return .= __('Action').'<br/>';
         $return .= '</th>';
         $return .= '</tr>';
 
@@ -116,7 +116,7 @@ function getCredentialGrid($guid, $connection2, $gibbonPersonID, $mini = false)
             $return .= '});';
             $return .= '</script>';
             if ($row['credentialNotes'] != '' or $row['websiteNotes'] != '') {
-                $return.= "<a title='".__($guid, 'View Notes')."' class='show_hide-$count-$gibbonPersonID' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'View Notes')."' onclick='return false;' /></a>";
+                $return.= "<a title='".__('View Notes')."' class='show_hide-$count-$gibbonPersonID' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__('View Notes')."' onclick='return false;' /></a>";
             }
             echo '</td>';
             $return .= '</tr>';
@@ -124,11 +124,11 @@ function getCredentialGrid($guid, $connection2, $gibbonPersonID, $mini = false)
                 $return .= "<tr class='comment-$count-$gibbonPersonID' id='comment-$count-$gibbonPersonID'>";
                 $return .= "<td colspan=5>";
                 if ($row['credentialNotes'] != '') {
-                    $return .= '<b>'.__($guid, 'Student Notes').'</b><br/>';
+                    $return .= '<b>'.__('Student Notes').'</b><br/>';
                     $return .= nl2brr($row['credentialNotes']).'<br/><br/>';
                 }
                 if ($row['websiteNotes'] != '') {
-                    $return .= '<b>'.__($guid, 'Website Notes').'</b><br/>';
+                    $return .= '<b>'.__('Website Notes').'</b><br/>';
                     $return .= nl2brr($row['websiteNotes']).'<br/><br/>';
                 }
                 $return .= '</td>';
