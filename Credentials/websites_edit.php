@@ -26,9 +26,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/websites.php'>".__('Manage Websites')."</a> > </div><div class='trailEnd'>".__('Edit Website').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Website'), 'websites.php');
+    $page->breadcrumbs->add(__('Edit Website'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -57,9 +56,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
         } else {
             //Let's go!
             $values = $result->fetch();
-            
+
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/websites_editProcess.php?credentialsWebsiteID='.$credentialsWebsiteID);
-                
+
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $row = $form->addRow();

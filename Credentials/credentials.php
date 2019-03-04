@@ -25,9 +25,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Manage Credentials').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Credentials'));
 
     echo "<div class='warning'>";
     echo '<b><u>WARNING</u></b>: This module uses two-way encryption to store and retreive passwords. This is secure, but far from infallible. Please use this module only for storing student credentials for sites which do not include sensitive personal data.';

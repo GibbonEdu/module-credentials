@@ -26,9 +26,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.p
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/websites.php'>".__('Manage Websites')."</a> > </div><div class='trailEnd'>".__('Add Website').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Website'), 'websites.php');
+    $page->breadcrumbs->add(__('Add Website'));
 
     $returns = array();
     $editLink = '';
@@ -40,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.p
     }
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/websites_addProcess.php');
-                
+
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow();

@@ -62,9 +62,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_vi
         } else {
             $row = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/credentials_view.php&search=$search&allStudents=$allStudents'>".__('Manage Credentials')."</a> > </div><div class='trailEnd'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</div>';
-            echo '</div>';
+            $page->breadcrumbs->add(__('Manage Credentials'), 'credentials.php', [
+                'search' => $search,
+                'allStudents' => $allStudents,
+            ]);
+            $page->breadcrumbs->add(formatName('', $row['preferredName'], $row['surname'], 'Student'));
 
             print getCredentialGrid($guid, $connection2, $gibbonPersonID);
         }

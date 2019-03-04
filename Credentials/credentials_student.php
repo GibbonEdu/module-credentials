@@ -54,9 +54,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
         } else {
             $row = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/credentials.php&search=$search&allStudents=$allStudents'>".__('Manage Credentials')."</a> > </div><div class='trailEnd'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</div>';
-            echo '</div>';
+            $page->breadcrumbs->add(__('Manage Credentials'), 'credentials.php', [
+                'search' => $search,
+                'allStudents' => $allStudents,
+            ]);
+            $page->breadcrumbs->add(formatName('', $row['preferredName'], $row['surname'], 'Student'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
@@ -107,8 +109,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 echo '</th>';
                 echo '</tr>';
 
-				//Decryption defines
-				define('SAFETY_CIPHER', MCRYPT_RIJNDAEL_256);
+                //Decryption defines
+                define('SAFETY_CIPHER', MCRYPT_RIJNDAEL_256);
                 define('SAFETY_MODE', MCRYPT_MODE_CFB);
                 define('APPLICATION_WIDE_PASSPHRASE', $guid);
                 define('ENCRYPTION_DIVIDER_TOKEN', '$$');
@@ -138,10 +140,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                     echo '<td>';
                     if ($row['password'] != '') {
                         //Key, etc.
-						$key = substr(md5(APPLICATION_WIDE_PASSPHRASE), 0, mcrypt_get_key_size(SAFETY_CIPHER, SAFETY_MODE));
+                        $key = substr(md5(APPLICATION_WIDE_PASSPHRASE), 0, mcrypt_get_key_size(SAFETY_CIPHER, SAFETY_MODE));
 
-						//Decrypt
-						echo mcrypt_decrypt(SAFETY_CIPHER, $key, base64_decode(substr($row['password'], (strpos($row['password'], '$$') + 2))), SAFETY_MODE, base64_decode(substr($row['password'], 0, strpos($row['password'], '$$')))).'<br/>';
+                        //Decrypt
+                        echo mcrypt_decrypt(SAFETY_CIPHER, $key, base64_decode(substr($row['password'], (strpos($row['password'], '$$') + 2))), SAFETY_MODE, base64_decode(substr($row['password'], 0, strpos($row['password'], '$$')))).'<br/>';
                     }
                     echo '</td>';
                     echo '<td>';
