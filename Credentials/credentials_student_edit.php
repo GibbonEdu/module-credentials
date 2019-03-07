@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 'allStudents' => $allStudents,
             ]);
             $page->breadcrumbs->add(
-                formatName('', $row['preferredName'], $row['surname'], 'Student'),
+                formatName('', $student['preferredName'], $student['surname'], 'Student'),
                 'credentials_student.php',
                 [
                     'gibbonPersonID' => $gibbonPersonID,

@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
             echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            $row = $result->fetch();
+            $student = $result->fetch();
 
             //Proceed!
             $page->breadcrumbs->add(__('Manage Credentials'), 'credentials.php', [
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 'allStudents' => $allStudents,
             ]);
             $page->breadcrumbs->add(
-                formatName('', $row['preferredName'], $row['surname'], 'Student'),
+                formatName('', $student['preferredName'], $student['surname'], 'Student'),
                 'credentials_student.php',
                 [
                     'gibbonPersonID' => $gibbonPersonID,

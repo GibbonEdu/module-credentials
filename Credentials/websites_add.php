@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.p
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Website'), 'websites.php');
+    $page->breadcrumbs->add(__('Manage Websites'), 'websites.php');
     $page->breadcrumbs->add(__('Add Website'));
 
     $returns = array();
