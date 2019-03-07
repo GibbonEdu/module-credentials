@@ -54,15 +54,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
 
         $row = $form->addRow();
             $row->addLabel('file', __('CSV File'))->description(__('See Notes below for specification.'));
-            $row->addFileUpload('file')->isRequired();
+            $row->addFileUpload('file')->required();
 
         $row = $form->addRow();
             $row->addLabel('fieldDelimiter', __('Field Delimiter'));
-            $row->addTextField('fieldDelimiter')->isRequired()->maxLength(1)->setValue(',');
+            $row->addTextField('fieldDelimiter')->required()->maxLength(1)->setValue(',');
 
         $row = $form->addRow();
             $row->addLabel('stringEnclosure', __('String Enclosure'));
-            $row->addTextField('stringEnclosure')->isRequired()->maxLength(1)->setValue('"');
+            $row->addTextField('stringEnclosure')->required()->maxLength(1)->setValue('"');
 
         $row = $form->addRow();
             $row->addFooter();

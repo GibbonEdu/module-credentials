@@ -44,11 +44,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.p
 
     $row = $form->addRow();
         $row->addLabel('title', __('Website Title'))->description(__('Must be unique.'));
-        $row->addTextField('title')->isRequired()->maxLength(100);
+        $row->addTextField('title')->required()->maxLength(100);
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
-        $row->addYesNo('active')->isRequired();
+        $row->addYesNo('active')->required();
 
     $row = $form->addRow();
         $row->addLabel('url', __('URL'));

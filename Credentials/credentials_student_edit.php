@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                     $sql = "SELECT credentialsWebsiteID as value, title as name FROM credentialsWebsite WHERE active='Y' ORDER BY title";
                     $row = $form->addRow();
                         $row->addLabel('credentialsWebsiteID', __('Website'));
-                        $row->addSelect('credentialsWebsiteID')->fromQuery($pdo, $sql)->isRequired()->placeholder();
+                        $row->addSelect('credentialsWebsiteID')->fromQuery($pdo, $sql)->required()->placeholder();
 
                     $row = $form->addRow();
                         $row->addLabel('username', __('Username'));
