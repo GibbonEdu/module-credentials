@@ -22,19 +22,17 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Credentials').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Credentials'));
 
     echo "<div class='warning'>";
     echo '<b><u>WARNING</u></b>: This module uses two-way encryption to store and retreive passwords. This is secure, but far from infallible. Please use this module only for storing student credentials for sites which do not include sensitive personal data.';
     echo '</div>';
 
     echo '<h2>';
-    echo __($guid, 'Search');
+    echo __('Search');
     echo '</h2>';
 
     $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
@@ -60,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
     echo $form->getOutput();
 
     echo '<h2>';
-    echo __($guid, 'Choose A Student');
+    echo __('Choose A Student');
     echo '</h2>';
 
     //Set pagination variable
@@ -95,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
     }
 
     if ($result->rowcount() < 1) { echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         if ($result->rowcount() > $_SESSION[$guid]['pagination']) {
@@ -105,19 +103,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Name');
+        echo __('Name');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Year Group');
+        echo __('Year Group');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Roll Group');
+        echo __('Roll Group');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Credential Count');
+        echo __('Credential Count');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Actions');
+        echo __('Actions');
         echo '</th>';
         echo '</tr>';
 
@@ -147,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
             echo '</td>';
             echo '<td>';
             if ($row['yearGroup'] != '') {
-                echo __($guid, $row['yearGroup']);
+                echo __($row['yearGroup']);
             }
             echo '</td>';
             echo '<td>';
@@ -157,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
             echo $row['credentialCount'];
             echo '</td>';
             echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/credentials_student.php&gibbonPersonID='.$row['gibbonPersonID']."&search=$search&allStudents=$allStudents'><img title='".__($guid, 'View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/credentials_student.php&gibbonPersonID='.$row['gibbonPersonID']."&search=$search&allStudents=$allStudents'><img title='".__('View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
             echo '</td>';
             echo '</tr>';
         }

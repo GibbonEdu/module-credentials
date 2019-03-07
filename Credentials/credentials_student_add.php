@@ -22,15 +22,15 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_student_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
-    $search = isset($_GET['search'])? $_GET['search'] : '';
-    $allStudents = isset($_GET['allStudents'])? $_GET['allStudents'] : '';
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+    $search = $_GET['search'] ?? '';
+    $allStudents = $_GET['allStudents'] ?? '';
 
     if ($gibbonPersonID == '') { echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -48,15 +48,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
         }
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
             $row = $result->fetch();
 
             //Proceed!
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/credentials.php'>".__($guid, 'Manage Credentials')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/credentials_student.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".formatName('', $row['preferredName'], $row['surname'], 'Student')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Credential').'</div>';
-            echo '</div>';
+            $page->breadcrumbs->add(__('Manage Credentials'), 'credentials.php', [
+                'search' => $search,
+                'allStudents' => $allStudents,
+            ]);
+            $page->breadcrumbs->add(
+                formatName('', $row['preferredName'], $row['surname'], 'Student'),
+                'credentials_student.php',
+                [
+                    'gibbonPersonID' => $gibbonPersonID,
+                    'search' => $search,
+                    'allStudents' => $allStudents,
+                ]
+            );
+            $page->breadcrumbs->add(__('Add Credential'));
 
             $returns = array();
             $editLink = '';
@@ -69,12 +80,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
 
             if ($_GET['search'] != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Credentials/credentials_student.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__($guid, 'Back').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Credentials/credentials_student.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__('Back').'</a>';
                 echo '</div>';
             }
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/credentials_student_addProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search.'&allStudents='.$allStudents);
-                
+
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $sql = "SELECT credentialsWebsiteID as value, title as name FROM credentialsWebsite WHERE active='Y' ORDER BY title";
@@ -93,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
             $row = $form->addRow();
                 $row->addLabel('notes', __('Notes'));
                 $row->addTextArea('notes')->setRows(5);
-                
+
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();

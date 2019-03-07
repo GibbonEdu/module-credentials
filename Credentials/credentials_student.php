@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_student.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
 
@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
     $allStudents = isset($_GET['allStudents'])? $_GET['allStudents'] : '';
 
     if ($gibbonPersonID == false) { echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -49,14 +49,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
             $row = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/credentials.php&search=$search&allStudents=$allStudents'>".__($guid, 'Manage Credentials')."</a> > </div><div class='trailEnd'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</div>';
-            echo '</div>';
+            $page->breadcrumbs->add(__('Manage Credentials'), 'credentials.php', [
+                'search' => $search,
+                'allStudents' => $allStudents,
+            ]);
+            $page->breadcrumbs->add(formatName('', $row['preferredName'], $row['surname'], 'Student'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
@@ -78,37 +80,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
 
             if ($search != '' or $allStudents != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Credentials/credentials.php&search=$search&allStudents=$allStudents'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Credentials/credentials.php&search=$search&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
 
             echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/credentials_student_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/credentials_student_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
             echo '</div>';
 
             if ($result->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
-                echo __($guid, 'Title').'<br/>';
+                echo __('Title').'<br/>';
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Username');
+                echo __('Username');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Password').'<br/>';
+                echo __('Password').'<br/>';
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Actions');
+                echo __('Actions');
                 echo '</th>';
                 echo '</tr>';
 
-				//Decryption defines
-				define('SAFETY_CIPHER', MCRYPT_RIJNDAEL_256);
+                //Decryption defines
+                define('SAFETY_CIPHER', MCRYPT_RIJNDAEL_256);
                 define('SAFETY_MODE', MCRYPT_MODE_CFB);
                 define('APPLICATION_WIDE_PASSPHRASE', $guid);
                 define('ENCRYPTION_DIVIDER_TOKEN', '$$');
@@ -138,15 +140,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                     echo '<td>';
                     if ($row['password'] != '') {
                         //Key, etc.
-						$key = substr(md5(APPLICATION_WIDE_PASSPHRASE), 0, mcrypt_get_key_size(SAFETY_CIPHER, SAFETY_MODE));
+                        $key = substr(md5(APPLICATION_WIDE_PASSPHRASE), 0, mcrypt_get_key_size(SAFETY_CIPHER, SAFETY_MODE));
 
-						//Decrypt
-						echo mcrypt_decrypt(SAFETY_CIPHER, $key, base64_decode(substr($row['password'], (strpos($row['password'], '$$') + 2))), SAFETY_MODE, base64_decode(substr($row['password'], 0, strpos($row['password'], '$$')))).'<br/>';
+                        //Decrypt
+                        echo mcrypt_decrypt(SAFETY_CIPHER, $key, base64_decode(substr($row['password'], (strpos($row['password'], '$$') + 2))), SAFETY_MODE, base64_decode(substr($row['password'], 0, strpos($row['password'], '$$')))).'<br/>';
                     }
                     echo '</td>';
                     echo '<td>';
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/credentials_student_edit.php&search='.$search.'&credentialsCredentialID='.$row['credentialsCredentialID']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/credentials_student_delete.php&search='.$search.'&credentialsCredentialID='.$row['credentialsCredentialID']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/credentials_student_edit.php&search='.$search.'&credentialsCredentialID='.$row['credentialsCredentialID']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/credentials_student_delete.php&search='.$search.'&credentialsCredentialID='.$row['credentialsCredentialID']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
                     echo '</td>';
                     echo '</tr>';
                 }

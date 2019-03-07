@@ -22,13 +22,12 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/websites.php'>".__($guid, 'Manage Websites')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Website').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Website'), 'websites.php');
+    $page->breadcrumbs->add(__('Edit Website'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -38,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
     $credentialsWebsiteID = $_GET['credentialsWebsiteID'];
     if ($credentialsWebsiteID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -52,14 +51,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
             $values = $result->fetch();
-            
+
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/websites_editProcess.php?credentialsWebsiteID='.$credentialsWebsiteID);
-                
+
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $row = $form->addRow();
