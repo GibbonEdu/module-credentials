@@ -90,3 +90,8 @@ $sql[$count][1] = "";
 ++$count;
 $sql[$count][0] = '2.3.00';
 $sql[$count][1] = "";
+
+//2.3.01
+++$count;
+$sql[$count][0] = '2.3.01';
+$sql[$count][1] = "";
