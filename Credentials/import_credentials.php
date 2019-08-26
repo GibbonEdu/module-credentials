@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                             $users[$userSuccessCount]['title'] = $data[1];
                             $users[$userSuccessCount]['username2'] = $data[2];
                             $users[$userSuccessCount]['password'] = $data[3];
-                            $users[$userSuccessCount]['notes'] = $data[4];
+                            $users[$userSuccessCount]['notes'] = (!empty($data[4])) ? $data[4] : '' ;
                             ++$userSuccessCount;
                         } else {
                             echo "<div class='error'>";
