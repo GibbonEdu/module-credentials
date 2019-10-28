@@ -16,19 +16,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-
+use Gibbon\Module\Credentials\CredentialsCredentialGateway;
 include '../../gibbon.php';
 
+//Module includes
+include './moduleFunctions.php';
 
-$gibbonPersonID = $_GET['gibbonPersonID'];
-$search = null;
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-}
-$allStudents = '';
-if (isset($_GET['allStudents'])) {
-    $allStudents = $_GET['allStudents'];
-}
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$search = $_GET['search'] ?? '';
+$allStudents = $_GET['allStudents'] ?? '';
+
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/credentials_student_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents";
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_student_add.php') == false) {
@@ -37,31 +34,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
     header("Location: {$URL}");
 } else {
     if ($gibbonPersonID == '') {
-        echo 'Fatal error loading this page!';
+        echo __('Fatal error loading this page!');
     } else {
         //Proceed!
         //Validate Inputs
-        $credentialsWebsiteID = $_POST['credentialsWebsiteID'];
+        $credentialsWebsiteID = $_POST['credentialsWebsiteID'] ?? '';
         $username = $_POST['username'];
         $notes = $_POST['notes'];
 
         //Encrypt password
         $passwordFinal = null;
         if ($_POST['password'] != '') {
-            //Defines
-            define('SAFETY_CIPHER', MCRYPT_RIJNDAEL_256);
-            define('SAFETY_MODE', MCRYPT_MODE_CFB);
-            define('APPLICATION_WIDE_PASSPHRASE', $guid);
-            define('ENCRYPTION_DIVIDER_TOKEN', '$$');
-
-            //Password, key, etc.
-            $password = $_POST['password'];
-            $key = substr(md5(APPLICATION_WIDE_PASSPHRASE), 0, mcrypt_get_key_size(SAFETY_CIPHER, SAFETY_MODE));
-            $initVector = mcrypt_create_iv(mcrypt_get_iv_size(SAFETY_CIPHER, SAFETY_MODE), MCRYPT_RAND);
-
-            //Encrypt & prepare
-            $encrypted = mcrypt_encrypt(SAFETY_CIPHER, $key, $password, SAFETY_MODE, $initVector);
-            $passwordFinal = base64_encode($initVector).ENCRYPTION_DIVIDER_TOKEN.base64_encode($encrypted);
+            $passwordFinal = getEncryptCredentialOpenssl($_POST['password']);
         }
 
         if ($credentialsWebsiteID == '') {
@@ -71,21 +55,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
         } else {
             //Write to database
             try {
+                $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
                 $data = array('gibbonPersonID' => $gibbonPersonID, 'credentialsWebsiteID' => $credentialsWebsiteID, 'username' => $username, 'password' => $passwordFinal, 'notes' => $notes, 'gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()));
-                $sql = 'INSERT INTO credentialsCredential SET credentialsWebsiteID=:credentialsWebsiteID, username=:username, password=:password, notes=:notes, gibbonPersonID=:gibbonPersonID, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
+                $AI = $credentialsCredentialGateway->insertCredentialsCredential($data);
+                if (!$AI) {
+                     throw new Exception();
+                }
+            } catch (Exception $e) {
                 //Fail 2
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
                 exit();
             }
-
-            $AI = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
-
             //Success 0
-            $URL .= '&return=success0&editID='.$AI;
+            $URL .= '&return=success0&editID='.str_pad($AI, 4, '0', STR_PAD_LEFT);;
             header("Location: {$URL}");
         }
     }

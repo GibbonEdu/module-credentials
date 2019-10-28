@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/hook_parentDas
     $returnInt .= 'You do not have access to this action.';
     $returnInt .= '</div>';
 } else {
-    $returnInt .= getCredentialGrid($guid, $connection2, $gibbonPersonID, true);
+    $returnInt .= getHookCredentialGrid($guid, $connection2, $gibbonPersonID, true);
 }
 
 return $returnInt;

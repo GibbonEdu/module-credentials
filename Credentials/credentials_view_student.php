@@ -1,21 +1,26 @@
 <?php
+
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+  Gibbon, Flexible & Open School System
+  Copyright (C) 2010, Ross Parker
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+use Gibbon\Module\Credentials\CredentialsCredentialGateway;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
 
 //Module includes
 include './modules/Credentials/moduleFunctions.php';
@@ -27,48 +32,87 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_vi
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $gibbonPersonID = $_GET['gibbonPersonID'];
-    $search = null;
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
-    }
-    $allStudents = '';
-    if (isset($_GET['allStudents'])) {
-        $allStudents = $_GET['allStudents'];
-    }
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+    $search = $_GET['search'] ?? '';
+    $allStudents = $_GET['allStudents'] ?? '';
 
-    if ($gibbonPersonID == false) { echo "<div class='error'>";
+    if ($gibbonPersonID == '') {
+        echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
-            if ($allStudents != 'on') {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
-                $sql = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
-            } else {
-                $data = array('gibbonPersonID' => $gibbonPersonID);
-                $sql = 'SELECT DISTINCT gibbonPerson.* FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
-            }
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+            $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
+
+            $studentGateway = $container->get(CredentialsCredentialGateway::class);
+            $searchColumns = $studentGateway->getSearchableColumns();
+
+            $criteria = $studentGateway->newQueryCriteria()
+                    ->searchBy($searchColumns, $search)
+                    ->sortBy(['surname', 'preferredName'])
+                    ->filterBy('all', $allStudents ?? '')
+                    ->fromPOST();
+            $students = $studentGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonPersonID);
+        } catch (Exception $e) {
+            echo "<div class='error'>" . $e->getMessage() . '</div>';
         }
 
-        if ($result->rowCount() != 1) {
+        if ($students->getResultCount() != 1) {
             echo "<div class='error'>";
             echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            $row = $result->fetch();
+            $student = $students->getRow(0);
 
-            $page->breadcrumbs->add(__('Manage Credentials'), 'credentials.php', [
+            $page->breadcrumbs->add(__('View Credentials'), 'credentials_view.php', [
                 'search' => $search,
                 'allStudents' => $allStudents,
             ]);
-            $page->breadcrumbs->add(formatName('', $row['preferredName'], $row['surname'], 'Student'));
+            $page->breadcrumbs->add(Format::name('', $student['preferredName'], $student['surname'], 'Student'));
 
-            print getCredentialGrid($guid, $connection2, $gibbonPersonID);
+            $criteria = $studentGateway->newQueryCriteria();
+            $credentials = $studentGateway->queryViewCredentialsByPerson($criteria, $gibbonPersonID);
+
+            if (!$credentials) {
+                echo "<div class='error'>";
+                echo __('There are no records to display.');
+                echo '</div>';
+            } else {
+                // DATA TABLE
+                $table = DataTable::createPaginated('credentials_students', $criteria);
+                // COLUMNS
+                $table->addColumn('logo', __('Logo'))
+                        ->format(function($credential)use($guid) {
+                            if ($credential['logo'] != '') {
+                                echo "<img class='user' style='max-width: 150px' src='" . $_SESSION[$guid]['absoluteURL'] . '/' . $credential['logo'] . "'/>";
+                            } else {
+                                echo "<img class='user' style='max-width: 150px' src='" . $_SESSION[$guid]['absoluteURL'] . '/themes/' . $_SESSION[$guid]['gibbonThemeName'] . "/img/anonymous_240_square.jpg'/>";
+                            }
+                        });
+                $table->addColumn('title', __('Title'))
+                        ->format(function ($credential) {
+                            return Format::link($credential['url'], $credential['title']);
+                        });
+                $table->addColumn('username', __('Username'));
+                $table->addColumn('password', __('Password'))
+                        ->format(function ($credential)use ($guid) {
+                            return getDecryptCredentialOpenssl($credential['password']);
+                        });
+                $table->addExpandableColumn('notes')
+                        ->format(function($credential) {
+                            $output = '';
+                            if (!empty($credential['websiteNotes'])) {
+                                $output .= '<strong>' . __('WebSite Notes') . '</strong>:';
+                                $output .= '<br />' . $credential['websiteNotes'] . '<br /><br />';
+                            }
+                            if (!empty($credential['credentialNotes'])) {
+                                $output .= '<strong>' . __('Credential Notes') . '</strong>:';
+                                $output .= '<br />' . $credential['credentialNotes'];
+                            }
+                            return $output;
+                        });
+                echo $table->render($credentials);
+            }
         }
     }
 }

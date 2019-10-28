@@ -25,14 +25,14 @@ $description = 'Credentials is a module for storing student login details, and m
 $entryURL = 'credentials.php';
 $type = 'Additional';
 $category = 'Admin';
-$version = '2.3.01';
+$version = '3.0.00';
 $author = 'Ross Parker';
 $url = 'http://rossparker.org';
 
 //Module tables
 $moduleTables[0] = 'CREATE TABLE `credentialsCredential` (
 `credentialsCredentialID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `credentialsWebsiteID` int(4) unsigned zerofill DEFAULT NULL,
+  `credentialsWebsiteID` int(4) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NULL DEFAULT NULL,

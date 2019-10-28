@@ -1,23 +1,26 @@
 <?php
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+  Gibbon, Flexible & Open School System
+  Copyright (C) 2010, Ross Parker
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 use Gibbon\Forms\Form;
+
+//Module includes
+include './modules/Credentials/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credentials.php') == false) {
     //Acess denied
@@ -28,13 +31,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
     //Proceed!
     $page->breadcrumbs->add(__('Import Credentials'));
 
-    $step = null;
-    if (isset($_GET['step'])) {
-        $step = $_GET['step'];
-    }
-    if ($step == '') {
-        $step = 1;
-    } elseif (($step != 1) and ($step != 2)) {
+    $step = $_GET['step'] ?? 1;
+
+    if (($step != 1) and ( $step != 2)) {
         $step = 1;
     }
 
@@ -48,72 +47,63 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
         echo __('This page allows you to import student credentials from a CSV file. The import will add credentials for sites a user user does not already have (based on name and URL), and update them otherwise. No credentials will be removed. Select the CSV file you wish to use for the import operation.');
         echo '</p>';
 
-        $form = Form::create('importUserPhotos', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_credentials.php&step=2');
+        $form = Form::create('importUserPhotos', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/import_credentials.php&step=2');
 
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
         $row = $form->addRow();
-            $row->addLabel('file', __('CSV File'))->description(__('See Notes below for specification.'));
-            $row->addFileUpload('file')->required();
+        $row->addLabel('file', __('CSV File'))->description(__('See Notes below for specification.'));
+        $row->addFileUpload('file')->required();
 
         $row = $form->addRow();
-            $row->addLabel('fieldDelimiter', __('Field Delimiter'));
-            $row->addTextField('fieldDelimiter')->required()->maxLength(1)->setValue(',');
+        $row->addLabel('fieldDelimiter', __('Field Delimiter'));
+        $row->addTextField('fieldDelimiter')->required()->maxLength(1)->setValue(',');
 
         $row = $form->addRow();
-            $row->addLabel('stringEnclosure', __('String Enclosure'));
-            $row->addTextField('stringEnclosure')->required()->maxLength(1)->setValue('"');
+        $row->addLabel('stringEnclosure', __('String Enclosure'));
+        $row->addTextField('stringEnclosure')->required()->maxLength(1)->setValue('"');
 
         $row = $form->addRow();
-            $row->addFooter();
-            $row->addSubmit();
+        $row->addFooter();
+        $row->addSubmit();
 
         echo $form->getOutput();
         ?>
 
-		<h4>
-			<?php echo __('Notes') ?>
-		</h4>
-		<ol>
-			<li style='color: #c00; font-weight: bold'><?php echo __('THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
-			<li><?php echo __('You may only submit CSV files.') ?></li>
-			<li><?php echo __('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
-			<li><?php echo __('Your import should only include all current students.') ?></li>
-			<li><?php echo __('The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
-				<ol>
-					<li><b><?php echo sprintf(__('%1$s Username'), $_SESSION[$guid]['systemName']) ?> *</b></li>
-					<li><b><?php echo __('Website') ?> *</b> - <?php echo __('Title/name of website. Must exist in Manage Websites section.') ?></li>
-					<li><b><?php echo __('Credential Username') ?></b></li>
-					<li><b><?php echo __('Password') ?></b> - <?php echo __('Plain text. It will be encrypted before being saved in database.') ?></li>
-                    <li><b><?php echo __('Notes') ?></b></li>
-				</ol>
-			</li>
-			<li><?php echo __('Do not include a header row in the CSV files.') ?></li>
-		</ol>
-	<?php
-
+        <h4>
+            <?php echo __('Notes') ?>
+        </h4>
+        <ol>
+            <li style='color: #c00; font-weight: bold'><?php echo __('THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+            <li><?php echo __('You may only submit CSV files.') ?></li>
+            <li><?php echo __('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+            <li><?php echo __('Your import should only include all current students.') ?></li>
+            <li><?php echo __('The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
+            <ol>
+                <li><b><?php echo sprintf(__('%1$s Username'), $_SESSION[$guid]['systemName']) ?> *</b></li>
+                <li><b><?php echo __('Website') ?> *</b> - <?php echo __('Title/name of website. Must exist in Manage Websites section.') ?></li>
+                <li><b><?php echo __('Credential Username') ?></b></li>
+                <li><b><?php echo __('Password') ?></b> - <?php echo __('Plain text. It will be encrypted before being saved in database.') ?></li>
+                <li><b><?php echo __('Notes') ?></b></li>
+            </ol>
+        </li>
+        <li><?php echo __('Do not include a header row in the CSV files.') ?></li>
+        </ol>
+        <?php
     } elseif ($step == 2) {
-        ?>
-		<h2>
-			<?php echo __('Step 2 - Data Check & Confirm') ?>
-		</h2>
-		<?php
+        echo '<h2>';
+        echo __('Step 2 - Data Check & Confirm');
+        echo '</h2>';
 
         //Check file type
-        if (($_FILES['file']['type'] != 'text/csv') and ($_FILES['file']['type'] != 'text/comma-separated-values') and ($_FILES['file']['type'] != 'text/x-comma-separated-values') and ($_FILES['file']['type'] != 'application/vnd.ms-excel')) {
-            ?>
-			<div class='error'>
-				<?php echo sprintf(__('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
-			</div>
-			<?php
-
-        } elseif (($_POST['fieldDelimiter'] == '') or ($_POST['stringEnclosure'] == '')) {
-            ?>
-			<div class='error'>
-				<?php echo __('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
-			</div>
-			<?php
-
+        if (($_FILES['file']['type'] != 'text/plain') and ( $_FILES['file']['type'] != 'text/csv') and ( $_FILES['file']['type'] != 'text/comma-separated-values') and ( $_FILES['file']['type'] != 'text/x-comma-separated-values') and ( $_FILES['file']['type'] != 'application/vnd.ms-excel')) {
+            echo '<div class="error">';
+            echo sprintf(__('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.<br />'), $_FILES['file']['type']);
+            echo '</div>';
+        } elseif (($_POST['fieldDelimiter'] == '') or ( $_POST['stringEnclosure'] == '')) {
+            echo '<div class="error">';
+            echo __('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.<br/>');
+            echo '</div>';
         } else {
             $proceed = true;
 
@@ -156,9 +146,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                         if ($data[0] != '' and $data[1] != '') {
                             $users[$userSuccessCount]['username'] = $data[0];
                             $users[$userSuccessCount]['title'] = $data[1];
-                            $users[$userSuccessCount]['username2'] = $data[2];
-                            $users[$userSuccessCount]['password'] = $data[3];
-                            $users[$userSuccessCount]['notes'] = $data[4];
+                            $users[$userSuccessCount]['username2'] = $data[2] ?? '';
+                            $users[$userSuccessCount]['password'] = $data[3] ?? '';
+                            $users[$userSuccessCount]['notes'] = $data[4] ?? '';
                             ++$userSuccessCount;
                         } else {
                             echo "<div class='error'>";
@@ -190,12 +180,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                     }
                 }
 
-                //Encryption defines
-                define('SAFETY_CIPHER', MCRYPT_RIJNDAEL_256);
-                define('SAFETY_MODE', MCRYPT_MODE_CFB);
-                define('APPLICATION_WIDE_PASSPHRASE', $guid);
-                define('ENCRYPTION_DIVIDER_TOKEN', '$$');
-
                 if ($proceed == true) {
                     echo '<h4>';
                     echo __('Enrol All Students');
@@ -219,19 +203,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
 
                         if ($checkFail == true) {
                             echo "<div class='error'>";
-                            echo __('There was an error with credential:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
+                            echo __('There was an error with credential:') . ' ' . $user['username'] . ', ' . $user['title'];
                             echo '</div>';
                         } else {
                             $passwordFinal = null;
                             if ($user['password'] != '') {
-                                //Password, key, etc.
-                                $password = $user['password'];
-                                $key = substr(md5(APPLICATION_WIDE_PASSPHRASE), 0, mcrypt_get_key_size(SAFETY_CIPHER, SAFETY_MODE));
-                                $initVector = mcrypt_create_iv(mcrypt_get_iv_size(SAFETY_CIPHER, SAFETY_MODE), MCRYPT_RAND);
-
                                 //Encrypt & prepare
-                                $encrypted = mcrypt_encrypt(SAFETY_CIPHER, $key, $password, SAFETY_MODE, $initVector);
-                                $passwordFinal = base64_encode($initVector).ENCRYPTION_DIVIDER_TOKEN.base64_encode($encrypted);
+                                $passwordFinal = getEncryptCredentialOpenssl($user['password']);
                             }
 
                             if ($result->rowCount() < 1) { //INSERT
@@ -248,11 +226,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                                 //Spit out results
                                 if ($credentialInsertFail == true) {
                                     echo "<div class='error'>";
-                                    echo __('There was an error with credential:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
+                                    echo __('There was an error with credential:') . ' ' . $user['username'] . ', ' . $user['title'];
                                     echo '</div>';
                                 } else {
                                     echo "<div class='success'>";
-                                    echo __('The following credential was successfully inserted:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
+                                    echo __('The following credential was successfully inserted:') . ' ' . $user['username'] . ', ' . $user['title'];
                                     echo '</div>';
                                 }
                             } else { //UPDATE
@@ -270,11 +248,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                                 //Spit out results
                                 if ($credentialInsertFail == true) {
                                     echo "<div class='error'>";
-                                    echo __('There was an error with credential:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
+                                    echo __('There was an error with credential:') . ' ' . $user['username'] . ', ' . $user['title'];
                                     echo '</div>';
                                 } else {
                                     echo "<div class='success'>";
-                                    echo __('The following credential was successfully updated:').' '.$user['username'].', '.$user['title'].', '.$user['url'];
+                                    echo __('The following credential was successfully updated:') . ' ' . $user['username'] . ', ' . $user['title'];
                                     echo '</div>';
                                 }
                             }
@@ -287,6 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                     $sql = 'UNLOCK TABLES';
                     $result = $connection2->query($sql);
                 } catch (PDOException $e) {
+                    
                 }
             }
         }

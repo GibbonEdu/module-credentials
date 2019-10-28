@@ -16,21 +16,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-
+use Gibbon\Module\Credentials\CredentialsCredentialGateway;
 include '../../gibbon.php';
 
+//Module includes
+include './moduleFunctions.php';
 
-$gibbonPersonID = $_GET['gibbonPersonID'];
-$search = null;
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-}
-$allStudents = '';
-if (isset($_GET['allStudents'])) {
-    $allStudents = $_GET['allStudents'];
-}
-$credentialsCredentialID = $_GET['credentialsCredentialID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/credentials_student_edit.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=Notes&credentialsCredentialID=$credentialsCredentialID";
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$search = $_GET['search'] ?? '';
+$allStudents = $_GET['allStudents'] ?? '';
+
+$credentialsCredentialID = $_GET['credentialsCredentialID'] ?? '';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/credentials_student_edit.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&credentialsCredentialID=$credentialsCredentialID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_student_edit.php') == false) {
     //Fail 0
@@ -40,47 +37,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
     //Proceed!
     //Check if note specified
     if ($credentialsCredentialID == '' or $gibbonPersonID == '') {
-        echo 'Fatal error loading this page!';
+        echo __('Fatal error loading this page!');
     } else {
         try {
-            $data = array('credentialsCredentialID' => $credentialsCredentialID);
-            $sql = 'SELECT * FROM credentialsCredential WHERE credentialsCredentialID=:credentialsCredentialID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
+            $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
+            $credential = $credentialsCredentialGateway->selectCredentialsCredentialById($credentialsCredentialID)->fetchAll();
+            if (!$credential and !empty($credential)) {
+                 throw new Exception();
+            }
+        } catch (Exception $e) {
             //Fail2
             $URL .= '&return=error2';
             header("Location: {$URL}");
             exit();
         }
 
-        if ($result->rowCount() != 1) {
+        if (count($credential) != 1) {
             //Fail 2
-            $URL .= '&return=error2';
+            //$URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $credentialsWebsiteID = $_POST['credentialsWebsiteID'];
+            $credentialsWebsiteID = $_POST['credentialsWebsiteID'] ?? '';
             $username = $_POST['username'];
             $notes = $_POST['notes'];
 
             //Encrypt password
             $passwordFinal = null;
             if ($_POST['password'] != '') {
-                //Encryption defines
-                define('SAFETY_CIPHER', MCRYPT_RIJNDAEL_256);
-                define('SAFETY_MODE', MCRYPT_MODE_CFB);
-                define('APPLICATION_WIDE_PASSPHRASE', $guid);
-                define('ENCRYPTION_DIVIDER_TOKEN', '$$');
-
-                //Password, key, etc.
-                $password = $_POST['password'];
-                $key = substr(md5(APPLICATION_WIDE_PASSPHRASE), 0, mcrypt_get_key_size(SAFETY_CIPHER, SAFETY_MODE));
-                $initVector = mcrypt_create_iv(mcrypt_get_iv_size(SAFETY_CIPHER, SAFETY_MODE), MCRYPT_RAND);
-
-                //Encrypt & prepare
-                $encrypted = mcrypt_encrypt(SAFETY_CIPHER, $key, $password, SAFETY_MODE, $initVector);
-                $passwordFinal = base64_encode($initVector).ENCRYPTION_DIVIDER_TOKEN.base64_encode($encrypted);
+                //Encrypt
+                $passwordFinal = getEncryptCredentialOpenssl($_POST['password']);
             }
 
             if ($credentialsWebsiteID == '') {
@@ -91,14 +77,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 //Write to database
                 try {
                     $data = array('gibbonPersonID' => $gibbonPersonID, 'credentialsWebsiteID' => $credentialsWebsiteID, 'username' => $username, 'password' => $passwordFinal, 'notes' => $notes, 'gibbonPersonID' => $gibbonPersonID, 'credentialsCredentialID' => $credentialsCredentialID);
-                    $sql = 'UPDATE credentialsCredential SET credentialsWebsiteID=:credentialsWebsiteID, username=:username, password=:password, notes=:notes, gibbonPersonID=:gibbonPersonID WHERE credentialsCredentialID=:credentialsCredentialID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo $e->getMessage();
-                    exit();
+                    if (!$credentialsCredentialGateway->updateCredentialsCredential($data)) {
+                        //throw new Exception();
+                    }
+                } catch (Exception $e) {
                     //Fail 2
-                    $URL .= '&return=error2';
+                    //$URL .= '&return=error2';
                     header("Location: {$URL}");
                     exit();
                 }

@@ -30,8 +30,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.p
     $page->breadcrumbs->add(__('Add Website'));
 
     $returns = array();
-    $editLink = '';
-    if (isset($_GET['editID'])) {
+    $editLink = $_GET['editID'] ?? '';
+    if ($editLink != '') {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Credentials/websites_edit.php&credentialsWebsiteID='.$_GET['editID'];
     }
     if (isset($_GET['return'])) {
@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.p
 
     $row = $form->addRow();
         $row->addLabel('url', __('URL'));
-        $row->addURL('url')->maxLength(255);
+        $row->addURL('url')->required()->maxLength(255);
 
     $row = $form->addRow();
         $row->addLabel('file1', __('Logo'));
