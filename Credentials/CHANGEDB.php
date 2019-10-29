@@ -96,6 +96,11 @@ $sql[$count][1] = "";
 $sql[$count][0] = '2.3.01';
 $sql[$count][1] = "";
 
+//2.3.02
+++$count;
+$sql[$count][0] = '2.3.02';
+$sql[$count][1] = "";
+
 //3.0.00
 ++$count;
 $sql[$count][0] = '3.0.00';
