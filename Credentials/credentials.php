@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
     $page->breadcrumbs->add(__('Manage Credentials'));
 
     echo "<div class='warning'>";
-    echo __('<b><u>WARNING</u></b>: This module uses two-way encryption to store and retreive passwords. This is secure, but far from infallible. Please use this module only for storing student credentials for sites which do not include sensitive personal data.');
+    echo __m('<b><u>WARNING</u></b>: This module uses two-way encryption to store and retreive passwords. This is secure, but far from infallible. Please use this module only for storing student credentials for sites which do not include sensitive personal data.');
     echo '</div>';
 
     echo '<h2>';
