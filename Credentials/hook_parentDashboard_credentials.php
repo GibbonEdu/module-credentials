@@ -34,10 +34,10 @@ if ($included == false) {
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/hook_parentDashboard_credentials.php') == false) {
     //Acess denied
     $returnInt .= "<div class='error'>";
-    $returnInt .= 'You do not have access to this action.';
+    $returnInt .= __m('You do not have access to this action.');
     $returnInt .= '</div>';
 } else {
-    $returnInt .= getCredentialGrid($guid, $connection2, $gibbonPersonID, true);
+    $returnInt .= getHookCredentialGrid($guid, $connection2, $gibbonPersonID, true);
 }
 
 return $returnInt;

@@ -22,16 +22,16 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __('You do not have access to this action.');
+    echo __m('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Websites'), 'websites.php');
-    $page->breadcrumbs->add(__('Add Website'));
+    $page->breadcrumbs->add(__m('Manage Websites'), 'websites.php');
+    $page->breadcrumbs->add(__m('Add Website'));
 
     $returns = array();
-    $editLink = '';
-    if (isset($_GET['editID'])) {
+    $editLink = $_GET['editID'] ?? '';
+    if ($editLink != '') {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Credentials/websites_edit.php&credentialsWebsiteID='.$_GET['editID'];
     }
     if (isset($_GET['return'])) {
@@ -43,23 +43,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.p
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow();
-        $row->addLabel('title', __('Website Title'))->description(__('Must be unique.'));
+        $row->addLabel('title', __m('Website Title'))->description(__m('Must be unique.'));
         $row->addTextField('title')->required()->maxLength(100);
 
     $row = $form->addRow();
-        $row->addLabel('active', __('Active'));
+        $row->addLabel('active', __m('Active'));
         $row->addYesNo('active')->required();
 
     $row = $form->addRow();
-        $row->addLabel('url', __('URL'));
-        $row->addURL('url')->maxLength(255);
+        $row->addLabel('url', __m('URL'));
+        $row->addURL('url')->required()->maxLength(255);
 
     $row = $form->addRow();
-        $row->addLabel('file1', __('Logo'));
+        $row->addLabel('file1', __m('Logo'));
         $row->addFileUpload('file1')->accepts('.jpg,.jpeg,.gif,.png')->setMaxUpload(false);
 
     $row = $form->addRow();
-        $row->addLabel('notes', __('Notes'));
+        $row->addLabel('notes', __m('Notes'));
         $row->addTextArea('notes')->setRows(5);
 
     $row = $form->addRow();
