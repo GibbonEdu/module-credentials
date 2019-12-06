@@ -29,7 +29,7 @@ $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $search = $_GET['search'] ?? '';
 $allStudents = $_GET['allStudents'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . getModuleName($_POST['address']) . "/credentials_student_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents";
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/credentials_student_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents";
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_student_add.php') == false) {
     //Fail 0
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 $AI = $credentialsCredentialGateway->insert($data);
 
                 //Success 0
-                $URL .= '&return=success0&editID=' . str_pad($AI, 4, '0', STR_PAD_LEFT);
+                $URL .= '&return=success0&editID='.str_pad($AI, 4, '0', STR_PAD_LEFT);
                 header("Location: {$URL}");
             }
         }
