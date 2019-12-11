@@ -107,5 +107,5 @@ $sql[$count][0] = '3.0.00';
 $sql[$count][1] = "
 ALTER TABLE `credentialsCredential` CHANGE COLUMN `credentialsWebsiteID` `credentialsWebsiteID` INT(4) UNSIGNED ZEROFILL NOT NULL;end 
 ALTER TABLE `credentialsCredential` ADD COLUMN `encryptAlgorithm` VARCHAR(15) NULL DEFAULT 'openssl' AFTER `password`;end
-UPDATE `credentialsCredential` SET `encryptAlgorithm` = 'mcrypt' WHERE password IS NOT NULL AND password != ''; end
+UPDATE `credentialsCredential` SET `encryptAlgorithm` = 'mcrypt' WHERE password IS NOT NULL AND password != '';end
 ";
