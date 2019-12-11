@@ -23,8 +23,8 @@ include './modules/Credentials/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/hook_studentProfile_credentials.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo 'You do not have access to this action.';
+    echo __m('You do not have access to this action.');
     echo '</div>';
 } else {
-    print getCredentialGrid($guid, $connection2, $gibbonPersonID);
+    print getHookCredentialGrid($guid, $connection2, $gibbonPersonID);
 }

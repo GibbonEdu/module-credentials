@@ -1,115 +1,79 @@
 <?php
+
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+  Gibbon, Flexible & Open School System
+  Copyright (C) 2010, Ross Parker
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Module\Credentials\CredentialsWebsiteGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __('You do not have access to this action.');
+    echo __m('You do not have access to this action.');
     echo '</div>';
 } else {
-    $page->breadcrumbs->add(__('Manage Websites'));
+    $page->breadcrumbs->add(__m('Manage Websites'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    try {
-        $data = array();
-        $sql = 'SELECT * FROM credentialsWebsite ORDER BY title';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    $websiteGateway = $container->get(CredentialsWebsiteGateway::class);
+    $criteria = $websiteGateway->newQueryCriteria()->sortBy(['title']);
+    $website = $websiteGateway->queryAllCredentialsWebsite($criteria);
 
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/websites_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
+    // DATA TABLE
+    $table = DataTable::createPaginated('websites', $criteria);
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __('Logo').'<br/>';
-        echo '</th>';
-        echo '<th>';
-        echo __('Website').'<br/>';
-        echo '</th>';
-        echo '<th>';
-        echo __('Notes').'<br/>';
-        echo '</th>';
-        echo '<th>';
-        echo __('Actions');
-        echo '</th>';
-        echo '</tr>';
+    $table->addHeaderAction('add', __m('Add'))
+            ->setURL('/modules/Credentials/websites_add.php')
+            ->displayLabel();
 
-		//Decryption defines
-		define('SAFETY_CIPHER', MCRYPT_RIJNDAEL_256);
-        define('SAFETY_MODE', MCRYPT_MODE_CFB);
-        define('APPLICATION_WIDE_PASSPHRASE', $guid);
-        define('ENCRYPTION_DIVIDER_TOKEN', '$$');
+    // COLUMNS
+    $table->modifyRows(function($website, $row) {
+        if ($website['active'] != 'Y')
+            $row->addClass('error');
+        return $row;
+    });
 
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
+    $table->addColumn('logo', __m('Logo'))
+            ->format(function($website)use($guid) {
+                if ($website['logo'] != '') {
+                    echo "<img class='user' style='max-width: 150px' src='".$_SESSION[$guid]['absoluteURL'].'/'.$website['logo']."'/>";
+                } else {
+                    echo "<img class='user' style='max-width: 150px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/anonymous_240_square.jpg'/>";
+                }
+            });
+    $table->addColumn('title', __m('Website Title'))
+            ->format(function ($website) {
+                return Format::link($website['url'], $website['title']);
+            });
+    $table->addColumn('notes', __m('Notes'));
 
-            if($row['active']=='N') {
-                $rowNum = 'error';
-            }
+    $table->addActionColumn()
+            ->addParam('credentialsWebsiteID')
+            ->format(function ($row, $actions) {
+                $actions->addAction('edit', __m('Edit'))
+                ->setURL('/modules/Credentials/websites_edit.php');
+                $actions->addAction('delete', __m('Delete'))
+                ->setURL('/modules/Credentials/websites_delete.php');
+            });
 
-            ++$count;
-
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            if ($row['logo'] != '') {
-                echo "<img class='user' style='max-width: 150px' src='".$_SESSION[$guid]['absoluteURL'].'/'.$row['logo']."'/>";
-            } else {
-                echo "<img class='user' style='max-width: 150px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/anonymous_240_square.jpg'/>";
-            }
-            echo '</td>';
-            echo '<td>';
-            if ($row['url'] != '') {
-                echo "<a href='".$row['url']."' target='_blank'>".$row['title'].'</a>';
-            } else {
-                echo $row['title'];
-            }
-            echo '</td>';
-            echo '<td>';
-            echo $row['notes'];
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/websites_edit.php&credentialsWebsiteID='.$row['credentialsWebsiteID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/websites_delete.php&credentialsWebsiteID='.$row['credentialsWebsiteID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
-    }
+    echo $table->render($website);
 }

@@ -1,26 +1,30 @@
 <?php
+
 /*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+  Gibbon, Flexible & Open School System
+  Copyright (C) 2010, Ross Parker
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+use Gibbon\Module\Credentials\CredentialsWebsiteGateway;
+use Gibbon\Module\Credentials\CredentialsCredentialGateway;
 
 include '../../gibbon.php';
 
+$credentialsWebsiteID = $_GET['credentialsWebsiteID'] ?? '';
 
-$credentialsWebsiteID = $_GET['credentialsWebsiteID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/websites_delete.php&credentialsWebsiteID=".$credentialsWebsiteID;
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/websites.php";
 
@@ -30,47 +34,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_delet
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if note specified
+    //Check if credentialsWebsiteID specified
     if ($credentialsWebsiteID == '') {
-        echo 'Fatal error loading this page!';
+        echo __m('Fatal error loading this page!');
     } else {
-        try {
-            $data = array('credentialsWebsiteID' => $credentialsWebsiteID);
-            $sql = 'SELECT * FROM credentialsWebsite WHERE credentialsWebsiteID=:credentialsWebsiteID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            //Fail2
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
+        $data = array('credentialsWebsiteID' => $credentialsWebsiteID);
+        $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
+        $credentialsCredentialGateway->deleteWhere($data);
+        $credentials = $credentialsCredentialGateway->selectBy($data)->fetch();
 
-        if ($result->rowCount() != 1) {
-            //Fail 2
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-        } else {
+        if (empty($credentials)) {
             //Write to database
-            try {
-                $data = array('credentialsWebsiteID' => $credentialsWebsiteID);
-                $sql = 'DELETE FROM credentialsWebsite WHERE credentialsWebsiteID=:credentialsWebsiteID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                //Fail2
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
+            $credentialsWebsiteGateway = $container->get(CredentialsWebsiteGateway::class);
+            $website = $credentialsWebsiteGateway->getById($credentialsWebsiteID);
 
-            //Attempt to delete student credentials based on this website
-            try {
-                $data = array('credentialsWebsiteID' => $credentialsWebsiteID);
-                $sql = 'DELETE FROM credentialsCredential WHERE credentialsWebsiteID=:credentialsWebsiteID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) { }
+            if ($website['logo'] != '') {
+                $fileLogo = $_SESSION[$guid]['absolutePath'].'/'.$website['logo'];
+                if (file_exists($fileLogo) and is_file($fileLogo)) {
+                    unlink($fileLogo);
+                }
+            }
+            $credentialsWebsiteGateway->delete($credentialsWebsiteID);
 
             //Success 0
             $URLDelete = $URLDelete.'&return=success0';
