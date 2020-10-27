@@ -109,3 +109,8 @@ ALTER TABLE `credentialsCredential` CHANGE COLUMN `credentialsWebsiteID` `creden
 ALTER TABLE `credentialsCredential` ADD COLUMN `encryptAlgorithm` VARCHAR(15) NULL DEFAULT 'openssl' AFTER `password`;end
 UPDATE `credentialsCredential` SET `encryptAlgorithm` = 'mcrypt' WHERE password IS NOT NULL AND password != '';end
 ";
+
+//3.0.01
+++$count;
+$sql[$count][0] = '3.0.01';
+$sql[$count][1] = "";

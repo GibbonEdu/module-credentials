@@ -157,8 +157,8 @@ function getDecryptCredentialOpenssl($password) {
 }
 
 // 
-define('SAFETY_CIPHER', MCRYPT_RIJNDAEL_256);
-define('SAFETY_MODE', MCRYPT_MODE_CFB);
+define('SAFETY_CIPHER', defined('MCRYPT_RIJNDAEL_256') ? MCRYPT_RIJNDAEL_256 : 'MCRYPT_RIJNDAEL_256');
+define('SAFETY_MODE', defined('MCRYPT_MODE_CFB') ? MCRYPT_MODE_CFB : 'MCRYPT_MODE_CFB');
 
 function changeMcryptToOpenssl($password){
     $key = substr(md5(APPLICATION_WIDE_PASSPHRASE), 0, mcrypt_get_key_size(SAFETY_CIPHER, SAFETY_MODE));
