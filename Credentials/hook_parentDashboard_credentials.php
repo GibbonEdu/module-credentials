@@ -20,16 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 $returnInt = null;
 
 //Module includes
-$included = false;
-$includes = get_included_files();
-foreach ($includes as $include) {
-    if (strpos(str_replace('\\', '/', $include), '/modules/Credentials/moduleFunctions.php') !== false) {
-        $included = true;
-    }
-}
-if ($included == false) {
-    require $_SESSION[$guid]['absolutePath'].'/modules/Credentials/moduleFunctions.php';
-}
+require_once $_SESSION[$guid]['absolutePath'].'/modules/Credentials/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/hook_parentDashboard_credentials.php') == false) {
     //Acess denied
