@@ -52,12 +52,12 @@ class CredentialsCredentialGateway extends QueryableGateway {
                 'gibbonPerson.surname', 
                 'gibbonPerson.preferredName', 
                 'gibbonYearGroup.nameShort AS yearGroup', 
-                'gibbonRollGroup.nameShort AS rollGroup', 
+                'gibbonFormGroup.nameShort AS formGroup', 
                 '(SELECT COUNT(gibbonPersonID) FROM credentialsCredential WHERE gibbonPersonID=gibbonPerson.gibbonPersonID) AS credentialCount'
             ])
             ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->leftJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
-            ->leftJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->leftJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
         if ($gibbonPersonID) {
             $query->where('gibbonPerson.gibbonPersonID=:gibbonPersonID')
@@ -98,12 +98,12 @@ class CredentialsCredentialGateway extends QueryableGateway {
                 'gibbonPerson.surname', 
                 'gibbonPerson.preferredName', 
                 'gibbonYearGroup.nameShort AS yearGroup', 
-                'gibbonRollGroup.nameShort AS rollGroup', 
+                'gibbonFormGroup.nameShort AS formGroup', 
                 '(SELECT COUNT(gibbonPersonID) FROM credentialsCredential WHERE gibbonPersonID=gibbonPerson.gibbonPersonID) AS credentialCount'
             ])
             ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->leftJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
-            ->leftJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->leftJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->where("(SELECT COUNT(gibbonPersonID) FROM credentialsCredential WHERE gibbonPersonID=gibbonPerson.gibbonPersonID) > 0")
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
