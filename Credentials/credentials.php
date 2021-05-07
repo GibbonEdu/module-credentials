@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
                 return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true).'<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
             });
     $table->addColumn('yearGroup', __m('Year Group'));
-    $table->addColumn('rollGroup', __m('Roll Group'));
+    $table->addColumn('formGroup', __m('Form Group'));
     $table->addColumn('credentialCount', __m('Credential Count'));
 
     $table->addActionColumn()
