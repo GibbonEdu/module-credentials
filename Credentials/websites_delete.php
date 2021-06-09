@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_delet
     }
 
     $credentialsWebsiteID = $_GET['credentialsWebsiteID'] ?? '';
- 
+
     if ($credentialsWebsiteID == '') {
         echo "<div class='error'>";
         echo __m('You have not specified one or more required parameters.');
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_delet
         $website = $credentialsWebsiteGateway->getById($credentialsWebsiteID);
 
         //Let's go!
-        $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/websites_deleteProcess.php?credentialsWebsiteID=$credentialsWebsiteID");
+        $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/websites_deleteProcess.php?credentialsWebsiteID=$credentialsWebsiteID");
         echo $form->getOutput();
     }
 }

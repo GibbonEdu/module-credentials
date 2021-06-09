@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
         echo '</div>';
     } else {
 
-        $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
+        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
         $studentGateway = $container->get(CredentialsCredentialGateway::class);
         $searchColumns = $studentGateway->getSearchableColumns();
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
 
                 if ($search != '') {
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Credentials/credentials_student.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__m('Back').'</a>';
+                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Credentials/credentials_student.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__m('Back').'</a>';
                     echo '</div>';
                 }
 
@@ -100,9 +100,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                     $values['password'] = getDecryptCredentialOpenssl($values['password']);
                 }
 
-                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/credentials_student_editProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search.'&allStudents='.$allStudents.'&credentialsCredentialID='.$credentialsCredentialID);
+                $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/credentials_student_editProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search.'&allStudents='.$allStudents.'&credentialsCredentialID='.$credentialsCredentialID);
 
-                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('address', $session->get('address'));
 
                 $sql = "SELECT credentialsWebsiteID as value, title as name FROM credentialsWebsite WHERE active='Y' ORDER BY title";
                 $row = $form->addRow();

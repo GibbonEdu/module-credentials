@@ -29,7 +29,7 @@ $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $search = $_GET['search'] ?? '';
 $credentialsCredentialID = $_GET['credentialsCredentialID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/credentials_student_edit.php&gibbonPersonID=$gibbonPersonID&search=".$search."&credentialsCredentialID=$credentialsCredentialID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/credentials_student_edit.php&gibbonPersonID=$gibbonPersonID&search=".$search."&credentialsCredentialID=$credentialsCredentialID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_student_edit.php') == false) {
     //Fail 0

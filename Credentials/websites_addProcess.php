@@ -22,7 +22,7 @@ use Gibbon\Module\Credentials\CredentialsWebsiteGateway;
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/websites_add.php";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/websites_add.php";
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.php') == false) {
     //Fail 0
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.p
         $credentialsWebsiteGateway = $container->get(CredentialsWebsiteGateway::class);
         $data = array('title' => $title);
         $website = $credentialsWebsiteGateway->selectBy($data)->fetch();
-        
+
         if (!empty($website)) {
             $URL .= '&return=error3';
             header("Location: {$URL}");
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.p
             }
 
             //Write to database
-            $data = array('title' => $title, 'active' => $active, 'url' => $url, 'logo' => $logo, 'notes' => $notes, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()));
+            $data = array('title' => $title, 'active' => $active, 'url' => $url, 'logo' => $logo, 'notes' => $notes, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'timestampCreator' => date('Y-m-d H:i:s', time()));
             $AI = $credentialsWebsiteGateway->insert($data);
 
             //Success 0

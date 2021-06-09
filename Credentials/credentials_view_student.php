@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_vi
         echo '</div>';
     } else {
 
-        $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
+        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
         $studentGateway = $container->get(CredentialsCredentialGateway::class);
         $searchColumns = $studentGateway->getSearchableColumns();
@@ -77,9 +77,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_vi
             $table->addColumn('logo', __m('Logo'))
                     ->format(function($credential)use($guid) {
                         if ($credential['logo'] != '') {
-                            echo "<img class='user' style='max-width: 150px' src='".$_SESSION[$guid]['absoluteURL'].'/'.$credential['logo']."'/>";
+                            echo "<img class='user' style='max-width: 150px' src='".$session->get('absoluteURL').'/'.$credential['logo']."'/>";
                         } else {
-                            echo "<img class='user' style='max-width: 150px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/anonymous_240_square.jpg'/>";
+                            echo "<img class='user' style='max-width: 150px' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/anonymous_240_square.jpg'/>";
                         }
                     });
             $table->addColumn('title', __m('Title'))

@@ -24,7 +24,7 @@ include '../../gibbon.php';
 
 
 $credentialsWebsiteID = $_GET['credentialsWebsiteID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/websites_edit.php&credentialsWebsiteID=$credentialsWebsiteID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/websites_edit.php&credentialsWebsiteID=$credentialsWebsiteID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.php') == false) {
     //Fail 0
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
                 //Write to database
 
                 if ($logo != $website['logo']) {
-                    $fileLogo = $_SESSION[$guid]['absolutePath'].'/'.$website['logo'];
+                    $fileLogo = $session->get('absolutePath').'/'.$website['logo'];
                     if (file_exists($fileLogo) and is_file($fileLogo)) {
                         unlink($fileLogo);
                     }

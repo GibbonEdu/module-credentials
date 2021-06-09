@@ -50,9 +50,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
         echo __m('This page allows you to import student credentials from a CSV file. The import will add credentials for sites a user user does not already have (based on name and URL), and update them otherwise. No credentials will be removed. Select the CSV file you wish to use for the import operation.');
         echo '</p>';
 
-        $form = Form::create('importUserPhotos', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_credentials.php&step=2');
+        $form = Form::create('importUserPhotos', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/import_credentials.php&step=2');
 
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('address', $session->get('address'));
 
         $row = $form->addRow();
         $row->addLabel('file', __m('CSV File'))->description(__m('See Notes below for specification.'));
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
             <li><?php echo __m('Your import should only include all current students.'); ?></li>
             <li><?php echo __m('The submitted file must have the following fields in the following order (* denotes required field):'); ?></li>
             <ol>
-                <li><b><?php echo sprintf(__m('%1$s Username'), $_SESSION[$guid]['systemName']); ?> *</b></li>
+                <li><b><?php echo sprintf(__m('%1$s Username'), $session->get('systemName')); ?> *</b></li>
                 <li><b><?php echo __m('Website'); ?> *</b> - <?php echo __m('Title/name of website. Must exist in Manage Websites section.'); ?></li>
                 <li><b><?php echo __m('Credential Username'); ?></b></li>
                 <li><b><?php echo __m('Password'); ?></b> - <?php echo __m('Plain text. It will be encrypted before being saved in database.') ?></li>
@@ -201,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                         }
 
                         if ($importCredential->getResultCount() < 1) {
-                            
+
                             //Check if website exists
                             $credentialsWebsiteGateway = $container->get(CredentialsWebsiteGateway::class);
                             $dataWebsite = array('title' => $user['title']);
@@ -212,9 +212,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                             $dataUser = array('username' => $user['username']);
                             $person = $userGateway->selectBy($dataUser)->fetch();
 
-                            if (!empty($credentialsWebsite)&&(!empty($person))) { 
+                            if (!empty($credentialsWebsite)&&(!empty($person))) {
                                 //Insert credential
-                                $data = array('gibbonPersonID' => $person['gibbonPersonID'], 'credentialsWebsiteID' => $credentialsWebsite['credentialsWebsiteID'], 'username' => $user['username2'], 'password' => $passwordFinal, 'notes' => $user['notes'], 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()));
+                                $data = array('gibbonPersonID' => $person['gibbonPersonID'], 'credentialsWebsiteID' => $credentialsWebsite['credentialsWebsiteID'], 'username' => $user['username2'], 'password' => $passwordFinal, 'notes' => $user['notes'], 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'timestampCreator' => date('Y-m-d H:i:s', time()));
                                 if ($credentialsCredentialGateway->insert($data)) {
                                     echo "<div class='success'>";
                                     echo __m('The following credential was successfully inserted:').' '.$user['username'].', '.$user['title'];
@@ -225,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                                 echo __m('There was an error with credential:').' '.$user['username'].', '.$user['title'];
                                 echo '</div>';
                             }
-                        } else { 
+                        } else {
                             //Update credential
                             $row = $importCredential->getRow(0);
                             $data = array('username' => $user['username2'], 'password' => $passwordFinal, 'notes' => $user['notes']);
@@ -248,7 +248,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                     $sql = 'UNLOCK TABLES';
                     $result = $connection2->query($sql);
                 } catch (PDOException $e) {
-                    
+
                 }
             }
         }

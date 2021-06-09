@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
         echo '</div>';
     } else {
 
-        $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
+        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
         $studentGateway = $container->get(CredentialsCredentialGateway::class);
 ;
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
 
             if ($search != '' or $allStudents != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Credentials/credentials.php&search=$search&allStudents=$allStudents'>".__m('Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Credentials/credentials.php&search=$search&allStudents=$allStudents'>".__m('Back to Search Results').'</a>';
                 echo '</div>';
             }
 
@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                     ->addParam('allStudents', $allStudents)
                     ->setURL('/modules/Credentials/credentials_student_add.php')
                     ->displayLabel();
-            
+
             // COLUMNS
             $table->addColumn('title', __m('Title'))
                     ->format(function ($credential) {

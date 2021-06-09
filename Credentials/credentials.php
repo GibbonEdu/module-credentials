@@ -45,10 +45,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
     $search = $_GET['search'] ?? '';
     $allStudents = $_GET['allStudents'] ?? '';
 
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('search', $session->get('absoluteURL').'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/credentials.php');
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/credentials.php');
 
     $row = $form->addRow();
     $row->addLabel('search', __m('Search For'))->description(__m('Preferred, surname, username.'));
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
     echo __m('Choose A Student');
     echo '</h2>';
 
-    $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
     $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
 
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
             $credentialsCredentialGateway->update($credentials['credentialsCredentialID'], $data);
         }
     }
-    
+
     $searchColumns = $credentialsCredentialGateway->getSearchableColumns();
 
     $criteria = $credentialsCredentialGateway->newQueryCriteria()
