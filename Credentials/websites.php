@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites.php')
     });
 
     $table->addColumn('logo', __m('Logo'))
-            ->format(function($website)use($guid) {
+            ->format(function($website)use($session) {
                 if ($website['logo'] != '') {
                     echo "<img class='user' style='max-width: 150px' src='".$session->get('absoluteURL').'/'.$website['logo']."'/>";
                 } else {
