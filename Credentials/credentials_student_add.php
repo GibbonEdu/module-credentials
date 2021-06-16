@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
         echo __m('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-        $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
+        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
         $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
         $searchColumns = $credentialsCredentialGateway->getSearchableColumns();
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
             $returns = array();
             $editLink = $_GET['editID'] ?? '';
             if ($editLink != '') {
-                $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Credentials/credentials_student_edit.php&credentialsCredentialID='.$editLink.'&search='.$search.'&allStudents'.$allStudents.'&gibbonPersonID='.$gibbonPersonID;
+                $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Credentials/credentials_student_edit.php&credentialsCredentialID='.$editLink.'&search='.$search.'&allStudents'.$allStudents.'&gibbonPersonID='.$gibbonPersonID;
             }
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], $editLink, $returns);
@@ -82,13 +82,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Credentials/credentials_student.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__m('Back').'</a>';
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Credentials/credentials_student.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__m('Back').'</a>';
                 echo '</div>';
             }
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/credentials_student_addProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search.'&allStudents='.$allStudents);
+            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/credentials_student_addProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search.'&allStudents='.$allStudents);
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $credentialsWebsiteGateway = $container->get(CredentialsWebsiteGateway::class);
 

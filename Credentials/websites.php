@@ -55,9 +55,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites.php')
     $table->addColumn('logo', __m('Logo'))
             ->format(function($website)use($guid) {
                 if ($website['logo'] != '') {
-                    echo "<img class='user' style='max-width: 150px' src='".$_SESSION[$guid]['absoluteURL'].'/'.$website['logo']."'/>";
+                    echo "<img class='user' style='max-width: 150px' src='".$session->get('absoluteURL').'/'.$website['logo']."'/>";
                 } else {
-                    echo "<img class='user' style='max-width: 150px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/anonymous_240_square.jpg'/>";
+                    echo "<img class='user' style='max-width: 150px' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/anonymous_240_square.jpg'/>";
                 }
             });
     $table->addColumn('title', __m('Website Title'))

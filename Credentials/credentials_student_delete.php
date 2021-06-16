@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
         echo '</div>';
     } else {
 
-        $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
+        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
         $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
         $searchColumns = $credentialsCredentialGateway->getSearchableColumns();
@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 $credential = $credentialsCredentialGateway->getById($credentialsCredentialID);
 
                 //Let's go!
-                $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/credentials_student_deleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&credentialsCredentialID=$credentialsCredentialID");
+                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/credentials_student_deleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&credentialsCredentialID=$credentialsCredentialID");
                 echo $form->getOutput();
             }
         }

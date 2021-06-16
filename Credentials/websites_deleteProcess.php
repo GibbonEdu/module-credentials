@@ -25,8 +25,8 @@ include '../../gibbon.php';
 
 $credentialsWebsiteID = $_GET['credentialsWebsiteID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/websites_delete.php&credentialsWebsiteID=".$credentialsWebsiteID;
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/websites.php";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/websites_delete.php&credentialsWebsiteID=".$credentialsWebsiteID;
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/websites.php";
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_delete.php') == false) {
     //Fail 0
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_delet
             $website = $credentialsWebsiteGateway->getById($credentialsWebsiteID);
 
             if ($website['logo'] != '') {
-                $fileLogo = $_SESSION[$guid]['absolutePath'].'/'.$website['logo'];
+                $fileLogo = $session->get('absolutePath').'/'.$website['logo'];
                 if (file_exists($fileLogo) and is_file($fileLogo)) {
                     unlink($fileLogo);
                 }

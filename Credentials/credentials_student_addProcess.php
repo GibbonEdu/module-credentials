@@ -29,7 +29,7 @@ $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $search = $_GET['search'] ?? '';
 $allStudents = $_GET['allStudents'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/credentials_student_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/credentials_student_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents";
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_student_add.php') == false) {
     //Fail 0
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 header("Location: {$URL}");
             } else {
                 //Write to database
-                $data = array('gibbonPersonID' => $gibbonPersonID, 'credentialsWebsiteID' => $credentialsWebsiteID, 'username' => $username, 'password' => $passwordFinal, 'notes' => $notes, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()));
+                $data = array('gibbonPersonID' => $gibbonPersonID, 'credentialsWebsiteID' => $credentialsWebsiteID, 'username' => $username, 'password' => $passwordFinal, 'notes' => $notes, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'timestampCreator' => date('Y-m-d H:i:s', time()));
                 $AI = $credentialsCredentialGateway->insert($data);
 
                 //Success 0
@@ -75,4 +75,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
         }
     }
 }
-    

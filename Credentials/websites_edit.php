@@ -30,11 +30,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
     //Proceed!
     $page->breadcrumbs->add(__m('Manage Websites'), 'websites.php');
     $page->breadcrumbs->add(__m('Edit Website'));
-    
+
     $returns = array(
         'error3'   => __m('Website title should be unique'),
     );
-    
+
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, $returns);
     }
@@ -50,9 +50,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
         $credentialsWebsiteGateway = $container->get(CredentialsWebsiteGateway::class);
         $values = $credentialsWebsiteGateway->getById($credentialsWebsiteID);
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/websites_editProcess.php?credentialsWebsiteID='.$credentialsWebsiteID);
+        $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/websites_editProcess.php?credentialsWebsiteID='.$credentialsWebsiteID);
 
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('address', $session->get('address'));
 
         $row = $form->addRow();
         $row->addLabel('title', __m('Website Title'))->description(__m('Must be unique.'));
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
         $row->addFileUpload('file1')
                 ->accepts('.jpg,.jpeg,.gif,.png')
                 ->setMaxUpload(false)
-                ->setAttachment('logo', $_SESSION[$guid]['absoluteURL'], $values['logo']);
+                ->setAttachment('logo', $session->get('absoluteURL'), $values['logo']);
 
         $row = $form->addRow();
         $row->addLabel('notes', __m('Notes'));
