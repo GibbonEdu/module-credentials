@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 $returnInt = null;
 
 //Module includes
-require_once $session->get('absolutePath').'/modules/Credentials/moduleFunctions.php';
+require_once './modules/Credentials/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/hook_parentDashboard_credentials.php') == false) {
     //Acess denied
