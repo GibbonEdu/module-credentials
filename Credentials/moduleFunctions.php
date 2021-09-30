@@ -60,7 +60,7 @@ function getHookCredentialGrid($guid, $connection2, $gibbonPersonID, $mini = fal
         $return .= __m('Password').'<br/>';
         $return .= '</th>';
         $return .= '<th>';
-        $return .= __m('Action').'<br/>';
+        $return .= __m('Notes').'<br/>';
         $return .= '</th>';
         $return .= '</tr>';
 
@@ -156,7 +156,7 @@ function getDecryptCredentialOpenssl($password) {
     return openssl_decrypt(base64_decode($hash_excypted), CIPHER, $key, 0, $salt);
 }
 
-// 
+//
 define('SAFETY_CIPHER', defined('MCRYPT_RIJNDAEL_256') ? MCRYPT_RIJNDAEL_256 : 'MCRYPT_RIJNDAEL_256');
 define('SAFETY_MODE', defined('MCRYPT_MODE_CFB') ? MCRYPT_MODE_CFB : 'MCRYPT_MODE_CFB');
 

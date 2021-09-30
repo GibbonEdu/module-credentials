@@ -74,8 +74,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_vi
             // DATA TABLE
             $table = DataTable::createPaginated('credentials_students', $criteria);
             // COLUMNS
+            $table->addExpandableColumn('notes')
+                    ->format(function($credential) {
+                        $output = '';
+                        if (!empty($credential['websiteNotes'])) {
+                            $output .= '<strong>'.__m('WebSite Notes').'</strong>:';
+                            $output .= '<br />'.$credential['websiteNotes'].'<br /><br />';
+                        }
+                        if (!empty($credential['credentialNotes'])) {
+                            $output .= '<strong>'.__m('Credential Notes').'</strong>:';
+                            $output .= '<br />'.$credential['credentialNotes'];
+                        }
+                        return $output;
+                    });
             $table->addColumn('logo', __m('Logo'))
-                    ->format(function($credential)use($guid) {
+                    ->format(function($credential) use ($guid, $session) {
                         if ($credential['logo'] != '') {
                             echo "<img class='user' style='max-width: 150px' src='".$session->get('absoluteURL').'/'.$credential['logo']."'/>";
                         } else {
@@ -91,19 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_vi
                     ->format(function ($credential)use ($guid) {
                         return getDecryptCredentialOpenssl($credential['password']);
                     });
-            $table->addExpandableColumn('notes')
-                    ->format(function($credential) {
-                        $output = '';
-                        if (!empty($credential['websiteNotes'])) {
-                            $output .= '<strong>'.__m('WebSite Notes').'</strong>:';
-                            $output .= '<br />'.$credential['websiteNotes'].'<br /><br />';
-                        }
-                        if (!empty($credential['credentialNotes'])) {
-                            $output .= '<strong>'.__m('Credential Notes').'</strong>:';
-                            $output .= '<br />'.$credential['credentialNotes'];
-                        }
-                        return $output;
-                    });
+
             echo $table->render($credentials);
         }
     }
