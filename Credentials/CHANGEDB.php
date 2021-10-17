@@ -144,3 +144,8 @@ $sql[$count][1] = "";
 ++$count;
 $sql[$count][0] = '3.1.04';
 $sql[$count][1] = "";
+
+//3.1.05
+++$count;
+$sql[$count][0] = '3.1.05';
+$sql[$count][1] = "";

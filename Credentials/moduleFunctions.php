@@ -24,6 +24,8 @@ define('APPLICATION_WIDE_PASSPHRASE', $guid);
 define('ENCRYPTION_DIVIDER_TOKEN', '$$');
 
 function getHookCredentialGrid($guid, $connection2, $gibbonPersonID, $mini = false) {
+    global $session;
+    
     $return = null;
 
     try {
@@ -82,9 +84,9 @@ function getHookCredentialGrid($guid, $connection2, $gibbonPersonID, $mini = fal
                 $size = '75px';
             }
             if ($row['logo'] != '') {
-                $return .= "<img class='user' style='max-width: $size' src='".$_SESSION[$guid]['absoluteURL'].'/'.$row['logo']."'/>";
+                $return .= "<img class='user' style='max-width: $size' src='".$session->get('absoluteURL').'/'.$row['logo']."'/>";
             } else {
-                $return .= "<img class='user' style='max-width: $size' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/anonymous_240_square.jpg'/>";
+                $return .= "<img class='user' style='max-width: $size' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/anonymous_240_square.jpg'/>";
             }
             $return .= '</td>';
             $return .= '<td>';
@@ -114,7 +116,7 @@ function getHookCredentialGrid($guid, $connection2, $gibbonPersonID, $mini = fal
             $return .= '});';
             $return .= '</script>';
             if ($row['credentialNotes'] != '' or $row['websiteNotes'] != '') {
-                $return .= "<a title='".__m('View Notes')."' class='show_hide-$count-$gibbonPersonID' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__m('View Notes')."' onclick='return false;' /></a>";
+                $return .= "<a title='".__m('View Notes')."' class='show_hide-$count-$gibbonPersonID' onclick='false' href='#'><img style='padding-right: 5px' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/page_down.png' alt='".__m('View Notes')."' onclick='return false;' /></a>";
             }
             echo '</td>';
             $return .= '</tr>';
