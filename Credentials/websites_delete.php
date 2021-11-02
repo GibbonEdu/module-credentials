@@ -26,11 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_delet
     echo __m('You do not have access to this action.');
     echo '</div>';
 } else {
-    //Proceed!
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $credentialsWebsiteID = $_GET['credentialsWebsiteID'] ?? '';
 
     if ($credentialsWebsiteID == '') {

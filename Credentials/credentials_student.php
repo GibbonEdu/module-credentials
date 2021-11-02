@@ -63,10 +63,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
             ]);
             $page->breadcrumbs->add(Format::name('', $student['preferredName'], $student['surname'], 'Student'));
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             if ($search != '' or $allStudents != '') {
                 echo "<div class='linkTop'>";
                 echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Credentials/credentials.php&search=$search&allStudents=$allStudents'>".__m('Back to Search Results').'</a>';

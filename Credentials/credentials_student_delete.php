@@ -49,14 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 ->fromPOST();
         $students = $credentialsCredentialGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonPersonID);
 
-
         if ($students->getResultCount() == 1) {
-
-            //Proceed!
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             //Check if credentialsCredentialID was specified
             $credentialsCredentialID = $_GET['credentialsCredentialID'] ?? '';
             if ($credentialsCredentialID == '') {

@@ -71,14 +71,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
             );
             $page->breadcrumbs->add(__m('Add Credential'));
 
-            $returns = array();
             $editLink = $_GET['editID'] ?? '';
             if ($editLink != '') {
                 $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Credentials/credentials_student_edit.php&credentialsCredentialID='.$editLink.'&search='.$search.'&allStudents'.$allStudents.'&gibbonPersonID='.$gibbonPersonID;
             }
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], $editLink, $returns);
-            }
+            $page->return->setEditLink($editLink);
 
             if ($search != '') {
                 echo "<div class='linkTop'>";

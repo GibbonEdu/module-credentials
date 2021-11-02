@@ -31,13 +31,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
     $page->breadcrumbs->add(__m('Manage Websites'), 'websites.php');
     $page->breadcrumbs->add(__m('Edit Website'));
 
-    $returns = array(
-        'error3'   => __m('Website title should be unique'),
-    );
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, $returns);
-    }
+    $returns = ['error3'   => __m('Website title should be unique')];
+    $page->return->addReturns($returns);
 
     //Check if credentialsWebsiteID specified
     $credentialsWebsiteID = $_GET['credentialsWebsiteID'] ?? '';

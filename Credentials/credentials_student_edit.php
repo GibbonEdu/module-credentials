@@ -74,10 +74,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
             );
             $page->breadcrumbs->add(__m('Edit Credential'));
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             //Check if credentialsCredentialID specified
             $credentialsCredentialID = $_GET['credentialsCredentialID'] ?? '';
 

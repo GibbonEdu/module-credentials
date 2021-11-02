@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites.php')
 } else {
     $page->breadcrumbs->add(__m('Manage Websites'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $websiteGateway = $container->get(CredentialsWebsiteGateway::class);
     $criteria = $websiteGateway->newQueryCriteria()->sortBy(['title']);
     $website = $websiteGateway->queryAllCredentialsWebsite($criteria);

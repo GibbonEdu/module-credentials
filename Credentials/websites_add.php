@@ -29,14 +29,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.p
     $page->breadcrumbs->add(__m('Manage Websites'), 'websites.php');
     $page->breadcrumbs->add(__m('Add Website'));
 
-    $returns = array();
     $editLink = $_GET['editID'] ?? '';
     if ($editLink != '') {
         $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Credentials/websites_edit.php&credentialsWebsiteID='.$_GET['editID'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, $returns);
-    }
+    $page->return->setEditLink($editLink);
 
     $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/websites_addProcess.php');
 
