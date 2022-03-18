@@ -18,9 +18,10 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Module\Credentials\CredentialsCredentialGateway;
-use Gibbon\Services\Format;
 
 //Module includes
 include './modules/Credentials/moduleFunctions.php';
@@ -45,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
         $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
         $studentGateway = $container->get(CredentialsCredentialGateway::class);
-;
+
         $criteria = $studentGateway->newQueryCriteria();
         $students = $studentGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonPersonID);
 
@@ -64,11 +65,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
             $page->breadcrumbs->add(Format::name('', $student['preferredName'], $student['surname'], 'Student'));
 
             if ($search != '' or $allStudents != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Credentials/credentials.php&search=$search&allStudents=$allStudents'>".__m('Back to Search Results').'</a>';
-                echo '</div>';
+                $params = [
+                    "search" => $search,
+                    "allStudents" => $allStudents
+                ];
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Credentials', 'credentials.php')->withQueryParams($params));
             }
-
 
             $studentCredentials = $studentGateway->queryViewCredentialsByPerson($criteria, $gibbonPersonID);
 

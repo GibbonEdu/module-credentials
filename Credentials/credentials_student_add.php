@@ -63,11 +63,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 'allStudents' => $allStudents,
             ]);
             $page->breadcrumbs->add(
-                    Format::name('', $student['preferredName'], $student['surname'], 'Student'), 'credentials_student.php', [
-                'gibbonPersonID' => $gibbonPersonID,
-                'search' => $search,
-                'allStudents' => $allStudents,
-                    ]
+                Format::name('', $student['preferredName'], $student['surname'], 'Student'), 'credentials_student.php', [
+                    'gibbonPersonID' => $gibbonPersonID,
+                    'search' => $search,
+                    'allStudents' => $allStudents,
+                ]
             );
             $page->breadcrumbs->add(__m('Add Credential'));
 
@@ -77,15 +77,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
             }
             $page->return->setEditLink($editLink);
 
-            if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Credentials/credentials_student.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__m('Back').'</a>';
-                echo '</div>';
-            }
-
             $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/credentials_student_addProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search.'&allStudents='.$allStudents);
 
             $form->addHiddenValue('address', $session->get('address'));
+
+            if ($search != '') {
+                $params = [
+                    "search" => $search,
+                    "allStudents" => $allStudents,
+                    "gibbonPersonID" => $gibbonPersonID
+                ];
+                $form->addHeaderAction('back', __('Back'))
+                    ->setURL('/modules/Credentials/credentials_student.php')
+                    ->addParams($params);
+            }
 
             $credentialsWebsiteGateway = $container->get(CredentialsWebsiteGateway::class);
 

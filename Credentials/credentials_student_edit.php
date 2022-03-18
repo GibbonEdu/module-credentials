@@ -47,10 +47,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
         $searchColumns = $studentGateway->getSearchableColumns();
 
         $criteria = $studentGateway->newQueryCriteria()
-                ->searchBy($searchColumns, $search)
-                ->sortBy(['surname', 'preferredName'])
-                ->filterBy('all', $allStudents)
-                ->fromPOST();
+            ->searchBy($searchColumns, $search)
+            ->sortBy(['surname', 'preferredName'])
+            ->filterBy('all', $allStudents)
+            ->fromPOST();
         $students = $studentGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonPersonID);
 
         if ($students->getResultCount() != 1) {
@@ -66,11 +66,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 'allStudents' => $allStudents,
             ]);
             $page->breadcrumbs->add(
-                    Format::name('', $student['preferredName'], $student['surname'], 'Student'), 'credentials_student.php', [
-                'gibbonPersonID' => $gibbonPersonID,
-                'search' => $search,
-                'allStudents' => $allStudents,
-                    ]
+                Format::name('', $student['preferredName'], $student['surname'], 'Student'), 'credentials_student.php', [
+                    'gibbonPersonID' => $gibbonPersonID,
+                    'search' => $search,
+                    'allStudents' => $allStudents,
+                ]
             );
             $page->breadcrumbs->add(__m('Edit Credential'));
 
@@ -85,12 +85,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 //Let's go!
                 $values = $studentGateway->getById($credentialsCredentialID);
 
-                if ($search != '') {
-                    echo "<div class='linkTop'>";
-                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Credentials/credentials_student.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__m('Back').'</a>';
-                    echo '</div>';
-                }
-
                 if ($values['password'] != '') {
                     //Decrypt
                     $values['password'] = getDecryptCredentialOpenssl($values['password']);
@@ -99,6 +93,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/credentials_student_editProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search.'&allStudents='.$allStudents.'&credentialsCredentialID='.$credentialsCredentialID);
 
                 $form->addHiddenValue('address', $session->get('address'));
+
+                if ($search != '') {
+                    $params = [
+                        "search" => $search,
+                        "allStudents" => $allStudents,
+                        "gibbonPersonID" => $gibbonPersonID
+                    ];
+                    $form->addHeaderAction('back', __('Back'))
+                        ->setURL('/modules/Credentials/credentials_student.php')
+                        ->addParams($params);
+                }
 
                 $sql = "SELECT credentialsWebsiteID as value, title as name FROM credentialsWebsite WHERE active='Y' ORDER BY title";
                 $row = $form->addRow();
