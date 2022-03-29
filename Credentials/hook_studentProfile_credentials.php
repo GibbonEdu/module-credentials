@@ -26,5 +26,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/hook_studentPr
     echo __m('You do not have access to this action.');
     echo '</div>';
 } else {
-    print getHookCredentialGrid($guid, $connection2, $gibbonPersonID);
+    print getHookCredentialGrid($container, $guid, $connection2, $gibbonPersonID);
 }

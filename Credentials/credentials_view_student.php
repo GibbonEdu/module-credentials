@@ -18,13 +18,13 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use Gibbon\Module\Credentials\CredentialsCredentialGateway;
-use Gibbon\Tables\DataTable;
+
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Module\Credentials\CredentialsCredentialGateway;
 
 //Module includes
 include './modules/Credentials/moduleFunctions.php';
-
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_view_student.php') == false) {
     //Acess denied
@@ -41,7 +41,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_vi
         echo __m('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-
         $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
         $studentGateway = $container->get(CredentialsCredentialGateway::class);
@@ -52,8 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_vi
                 ->sortBy(['surname', 'preferredName'])
                 ->filterBy('all', $allStudents)
                 ->fromPOST();
-        $students = $studentGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonPersonID);
 
+        $students = $studentGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonPersonID);
 
         if ($students->getResultCount() != 1) {
             echo "<div class='error'>";

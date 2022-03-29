@@ -18,127 +18,63 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */;
 
+use Gibbon\Tables\DataTable;
+use Gibbon\Module\Credentials\CredentialsCredentialGateway;
+
 //Encryption/Decryption defines version 3.0.00 or higher
 define('CIPHER', 'AES-256-CBC');
 define('APPLICATION_WIDE_PASSPHRASE', $guid);
 define('ENCRYPTION_DIVIDER_TOKEN', '$$');
 
-function getHookCredentialGrid($guid, $connection2, $gibbonPersonID, $mini = false) {
+function getHookCredentialGrid($container, $guid, $connection2, $gibbonPersonID, $mini = false) {
     global $session;
-    
+
     $return = null;
 
-    try {
-        $data = array('gibbonPersonID' => $gibbonPersonID);
-        $sql = 'SELECT logo, title, url, username, password, credentialsCredential.notes AS credentialNotes, credentialsWebsite.notes AS websiteNotes
-            FROM credentialsCredential
-                JOIN credentialsWebsite ON (credentialsCredential.credentialsWebsiteID=credentialsWebsite.credentialsWebsiteID)
-            WHERE gibbonPersonID=:gibbonPersonID
-                AND credentialsWebsite.active=\'Y\'
-            ORDER BY title';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $return .= "<div class='error'>".$e->getMessage().'</div>';
-    }
+    $credentialsGateway = $container->get(CredentialsCredentialGateway::class);
 
-    if ($result->rowCount() < 1) {
-        $return .= "<div class='error'>";
-        $return .= __m('There are no records to display.');
-        $return .= '</div>';
-    } else {
-        $return .= "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-        $return .= "<tr class='head'>";
-        $return .= '<th>';
-        $return .= __m('Logo').'<br/>';
-        $return .= '</th>';
-        $return .= '<th>';
-        $return .= __m('Website').'<br/>';
-        $return .= '</th>';
-        $return .= '<th>';
-        $return .= __m('Username').'<br/>';
-        $return .= '</th>';
-        $return .= '<th>';
-        $return .= __m('Password').'<br/>';
-        $return .= '</th>';
-        $return .= '<th>';
-        $return .= __m('Notes').'<br/>';
-        $return .= '</th>';
-        $return .= '</tr>';
+    $criteria = $credentialsGateway->newQueryCriteria();
+    $credentials = $credentialsGateway->queryViewCredentialsByPerson($criteria, $gibbonPersonID);
 
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
+    // DATA TABLE
+    $table = DataTable::createPaginated('credentials', $criteria);
+
+    $table->addExpandableColumn('notes')
+        ->format(function($values) {
+            $output = '';
+            if (!empty($values['websiteNotes'])) {
+                $output .= '<strong>'.__m('WebSite Notes').'</strong>:';
+                $output .= '<br />'.$values['websiteNotes'].'<br /><br />';
+            }
+            if (!empty($values['credentialNotes'])) {
+                $output .= '<strong>'.__m('Credential Notes').'</strong>:';
+                $output .= '<br />'.$values['credentialNotes'];
+            }
+            return $output;
+        });
+
+    $table->addColumn('logo', __m('Logo'))
+        ->format(function($values) use ($guid, $session) {
+            if ($values['logo'] != '') {
+                echo "<img class='user' style='max-width: 150px' src='".$session->get('absoluteURL').'/'.$values['logo']."'/>";
             } else {
-                $rowNum = 'odd';
+                echo "<img class='user' style='max-width: 150px' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/anonymous_240_square.jpg'/>";
             }
-            ++$count;
+        });
 
-            //COLOR ROW BY STATUS!
-            $return .= "<tr class=$rowNum>";
-            $return .= '<td>';
-            $size = '150px';
-            if ($mini) {
-                $size = '75px';
-            }
-            if ($row['logo'] != '') {
-                $return .= "<img class='user' style='max-width: $size' src='".$session->get('absoluteURL').'/'.$row['logo']."'/>";
-            } else {
-                $return .= "<img class='user' style='max-width: $size' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/anonymous_240_square.jpg'/>";
-            }
-            $return .= '</td>';
-            $return .= '<td>';
-            if ($row['url'] != '') {
-                $return .= "<a href='".$row['url']."' target='_blank'>".$row['title'].'</a>';
-            } else {
-                $return .= $row['title'];
-            }
-            $return .= '</td>';
-            $return .= '<td>';
-            $return .= $row['username'];
-            $return .= '</td>';
-            $return .= '<td>';
-            if ($row['password'] != '') {
-                //Decrypt
-                $return .= getDecryptCredentialOpenssl($row['password']).'<br/>';
-            }
-            $return .= '</td>';
-            $return .= '<td>';
-            $return .= "<script type='text/javascript'>";
-            $return .= '$(document).ready(function(){';
-            $return .= "\$(\".comment-$count-$gibbonPersonID\").hide();";
-            $return .= "\$(\".show_hide-$count-$gibbonPersonID\").fadeIn(1000);";
-            $return .= "\$(\".show_hide-$count-$gibbonPersonID\").click(function(){";
-            $return .= "\$(\".comment-$count-$gibbonPersonID\").fadeToggle(1000);";
-            $return .= '});';
-            $return .= '});';
-            $return .= '</script>';
-            if ($row['credentialNotes'] != '' or $row['websiteNotes'] != '') {
-                $return .= "<a title='".__m('View Notes')."' class='show_hide-$count-$gibbonPersonID' onclick='false' href='#'><img style='padding-right: 5px' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/page_down.png' alt='".__m('View Notes')."' onclick='return false;' /></a>";
-            }
-            echo '</td>';
-            $return .= '</tr>';
-            if ($row['credentialNotes'] != '' or $row['websiteNotes'] != '') {
-                $return .= "<tr class='comment-$count-$gibbonPersonID' id='comment-$count-$gibbonPersonID'>";
-                $return .= "<td colspan=5>";
-                if ($row['credentialNotes'] != '') {
-                    $return .= '<b>'.__m('Student Notes').'</b><br/>';
-                    $return .= nl2brr($row['credentialNotes']).'<br/><br/>';
-                }
-                if ($row['websiteNotes'] != '') {
-                    $return .= '<b>'.__m('Website Notes').'</b><br/>';
-                    $return .= nl2brr($row['websiteNotes']).'<br/><br/>';
-                }
-                $return .= '</td>';
-                $return .= '</tr>';
-            }
-        }
-        $return .= '</table>';
-    }
+    $table->addColumn('title', __m('Title'))
+        ->format(function ($values) {
+            return Format::link($values['url'], $values['title']);
+        });
 
-    return $return;
+    $table->addColumn('username', __m('Username'));
+
+    $table->addColumn('password', __m('Password'))
+        ->format(function ($values)use ($guid) {
+            return getDecryptCredentialOpenssl($values['password']);
+        });
+
+    return $table->render($credentials);
 }
 
 function getEncryptCredentialOpenssl($password) {
