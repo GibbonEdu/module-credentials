@@ -18,8 +18,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */;
 
+use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Module\Credentials\CredentialsCredentialGateway;
+use Gibbon\Module\Credentials\CredentialGateway;
+
+require_once $session->get('absolutePath')."/modules/Credentials/src/Domain/CredentialGateway.php";
 
 //Encryption/Decryption defines version 3.0.00 or higher
 define('CIPHER', 'AES-256-CBC');
@@ -31,7 +34,7 @@ function getHookCredentialGrid($container, $guid, $connection2, $gibbonPersonID,
 
     $return = null;
 
-    $credentialsGateway = $container->get(CredentialsCredentialGateway::class);
+    $credentialsGateway = $container->get(CredentialGateway::class);
 
     $criteria = $credentialsGateway->newQueryCriteria();
     $credentials = $credentialsGateway->queryViewCredentialsByPerson($criteria, $gibbonPersonID);
@@ -43,7 +46,7 @@ function getHookCredentialGrid($container, $guid, $connection2, $gibbonPersonID,
         ->format(function($values) {
             $output = '';
             if (!empty($values['websiteNotes'])) {
-                $output .= '<strong>'.__m('WebSite Notes').'</strong>:';
+                $output .= '<strong>'.__m('Website Notes').'</strong>:';
                 $output .= '<br />'.$values['websiteNotes'].'<br /><br />';
             }
             if (!empty($values['credentialNotes'])) {

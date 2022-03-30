@@ -21,7 +21,7 @@
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Module\Credentials\CredentialsCredentialGateway;
+use Gibbon\Module\Credentials\Domain\CredentialGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_view.php') == false) {
     //Acess denied
@@ -63,21 +63,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_vi
 
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
-    $studentGateway = $container->get(CredentialsCredentialGateway::class);
-    $searchColumns = $studentGateway->getSearchableColumns();
+    $credentialGateway = $container->get(CredentialGateway::class);
+    $searchColumns = $credentialGateway->getSearchableColumns();
 
-    $criteria = $studentGateway->newQueryCriteria()
+    $criteria = $credentialGateway->newQueryCriteria()
             ->searchBy($searchColumns, $search)
             ->sortBy(['surname', 'preferredName'])
             ->filterBy('all', $allStudents)
             ->fromPOST();
-    $students = $studentGateway->queryCredentialsStudentBySchoolYear($criteria, $gibbonSchoolYearID);
+    $students = $credentialGateway->queryCredentialsStudentBySchoolYear($criteria, $gibbonSchoolYearID);
 
 
     // DATA TABLE
     $table = DataTable::createPaginated('students', $criteria);
 
-    $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
+    $table->modifyRows($credentialGateway->getSharedUserRowHighlighter());
 
     $table->addMetaData('filterOptions', [
         'all:on' => __m('All Students')

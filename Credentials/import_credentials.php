@@ -19,8 +19,8 @@
 
 use Gibbon\Forms\Form;
 use Gibbon\Domain\User\UserGateway;
-use Gibbon\Module\Credentials\CredentialsCredentialGateway;
-use Gibbon\Module\Credentials\CredentialsWebsiteGateway;
+use Gibbon\Module\Credentials\CredentialGateway;
+use Gibbon\Module\Credentials\WebsiteGateway;
 
 //Module includes
 include './modules/Credentials/moduleFunctions.php';
@@ -190,9 +190,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                     foreach ($users as $user) {
 
                         //Check if credential exists for user
-                        $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
-                        $criteria = $credentialsCredentialGateway->newQueryCriteria();
-                        $importCredential = $credentialsCredentialGateway->queryViewCredentialsByPerson($criteria, $user['username'], $user['title']);
+                        $credentialGateway = $container->get(CredentialGateway::class);
+                        $criteria = $credentialGateway->newQueryCriteria();
+                        $importCredential = $credentialGateway->queryViewCredentialsByPerson($criteria, $user['username'], $user['title']);
 
                         $passwordFinal = null;
                         if ($user['password'] != '') {
@@ -203,9 +203,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                         if ($importCredential->getResultCount() < 1) {
 
                             //Check if website exists
-                            $credentialsWebsiteGateway = $container->get(CredentialsWebsiteGateway::class);
+                            $websiteGateway = $container->get(WebsiteGateway::class);
                             $dataWebsite = array('title' => $user['title']);
-                            $credentialsWebsite = $credentialsWebsiteGateway->selectBy($dataWebsite)->fetch();
+                            $credentialsWebsite = $websiteGateway->selectBy($dataWebsite)->fetch();
 
                             //Check if user/person exists
                             $userGateway = $container->get(UserGateway::class);
@@ -215,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                             if (!empty($credentialsWebsite)&&(!empty($person))) {
                                 //Insert credential
                                 $data = array('gibbonPersonID' => $person['gibbonPersonID'], 'credentialsWebsiteID' => $credentialsWebsite['credentialsWebsiteID'], 'username' => $user['username2'], 'password' => $passwordFinal, 'notes' => $user['notes'], 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'timestampCreator' => date('Y-m-d H:i:s', time()));
-                                if ($credentialsCredentialGateway->insert($data)) {
+                                if ($credentialGateway->insert($data)) {
                                     echo "<div class='success'>";
                                     echo __m('The following credential was successfully inserted:').' '.$user['username'].', '.$user['title'];
                                     echo '</div>';
@@ -230,7 +230,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/import_credent
                             $row = $importCredential->getRow(0);
                             $data = array('username' => $user['username2'], 'password' => $passwordFinal, 'notes' => $user['notes']);
                             //Print out results
-                            if (!$credentialsCredentialGateway->update($row['credentialsCredentialID'], $data)) {
+                            if (!$credentialGateway->update($row['credentialsCredentialID'], $data)) {
                                 echo "<div class='error'>";
                                 echo __m('There was an error with credential:').' '.$user['username'].', '.$user['title'];
                                 echo '</div>';

@@ -20,7 +20,7 @@
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Module\Credentials\CredentialsCredentialGateway;
+use Gibbon\Module\Credentials\Domain\CredentialsCredentialGateway;
 
 //Module includes
 include './modules/Credentials/moduleFunctions.php';

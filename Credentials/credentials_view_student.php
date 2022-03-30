@@ -21,7 +21,7 @@
 
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Module\Credentials\CredentialsCredentialGateway;
+use Gibbon\Module\Credentials\Domain\CredentialGateway;
 
 //Module includes
 include './modules/Credentials/moduleFunctions.php';
@@ -43,16 +43,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_vi
     } else {
         $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
-        $studentGateway = $container->get(CredentialsCredentialGateway::class);
-        $searchColumns = $studentGateway->getSearchableColumns();
+        $credentialGateway = $container->get(CredentialGateway::class);
+        $searchColumns = $credentialGateway->getSearchableColumns();
 
-        $criteria = $studentGateway->newQueryCriteria()
+        $criteria = $credentialGateway->newQueryCriteria()
                 ->searchBy($searchColumns, $search)
                 ->sortBy(['surname', 'preferredName'])
                 ->filterBy('all', $allStudents)
                 ->fromPOST();
 
-        $students = $studentGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonPersonID);
+        $students = $credentialGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonPersonID);
 
         if ($students->getResultCount() != 1) {
             echo "<div class='error'>";
@@ -67,8 +67,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_vi
             ]);
             $page->breadcrumbs->add(Format::name('', $student['preferredName'], $student['surname'], 'Student'));
 
-            $criteria = $studentGateway->newQueryCriteria();
-            $credentials = $studentGateway->queryViewCredentialsByPerson($criteria, $gibbonPersonID);
+            $criteria = $credentialGateway->newQueryCriteria();
+            $credentials = $credentialGateway->queryViewCredentialsByPerson($criteria, $gibbonPersonID);
 
             // DATA TABLE
             $table = DataTable::createPaginated('credentials_students', $criteria);
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_vi
                     ->format(function($credential) {
                         $output = '';
                         if (!empty($credential['websiteNotes'])) {
-                            $output .= '<strong>'.__m('WebSite Notes').'</strong>:';
+                            $output .= '<strong>'.__m('Website Notes').'</strong>:';
                             $output .= '<br />'.$credential['websiteNotes'].'<br /><br />';
                         }
                         if (!empty($credential['credentialNotes'])) {

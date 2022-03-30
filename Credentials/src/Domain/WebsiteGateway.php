@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Gibbon\Module\Credentials;
+namespace Gibbon\Module\Credentials\Domain;
 
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
@@ -27,7 +27,7 @@ use Gibbon\Domain\QueryableGateway;
  * @version v16
  * @since   v16
  */
-class CredentialsWebsiteGateway extends QueryableGateway {
+class WebsiteGateway extends QueryableGateway {
 
     use TableAware;
 
@@ -47,14 +47,14 @@ class CredentialsWebsiteGateway extends QueryableGateway {
             'credentialsWebsite.notes',
             'credentialsWebsite.active'
         ]);
-        
+
         $criteria->addFilterRules([
             'active' => function ($query, $active) {
                 return $query
                     ->where('credentialsWebsite.active = :active')
                     ->bindValue('active', $active);
             },
-        ]);        
+        ]);
 
         return $this->runQuery($query, $criteria);
     }

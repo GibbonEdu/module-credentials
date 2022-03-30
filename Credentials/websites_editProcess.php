@@ -18,7 +18,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use Gibbon\Module\Credentials\CredentialsWebsiteGateway;
+use Gibbon\Module\Credentials\WebsiteGateway;
 
 include '../../gibbon.php';
 
@@ -37,8 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
         echo __m('Fatal error loading this page!');
     } else {
 
-        $credentialsWebsiteGateway = $container->get(CredentialsWebsiteGateway::class);
-        $website = $credentialsWebsiteGateway->getById($credentialsWebsiteID);
+        $websiteGateway = $container->get(WebsiteGateway::class);
+        $website = $websiteGateway->getById($credentialsWebsiteID);
         if (!$website and ! empty($website)) {
             //Fail2
             $URL .= '&return=error2';
@@ -59,10 +59,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
             header("Location: {$URL}");
         } else {
             //Check unique inputs for uniquness
-            $credentialsWebsiteGateway = $container->get(CredentialsWebsiteGateway::class);
+            $websiteGateway = $container->get(WebsiteGateway::class);
             $data = array('title'=> $title);
             $fieldUnique = array('title');
-            $uniqueTitle = $credentialsWebsiteGateway->unique($data, $fieldUnique, $credentialsWebsiteID);
+            $uniqueTitle = $websiteGateway->unique($data, $fieldUnique, $credentialsWebsiteID);
 
             if (!$uniqueTitle) {
                 $URL .= '&return=error3';
@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
                     }
                 }
                 $data = array('title' => $title, 'active' => $active, 'url' => $url, 'logo' => $logo, 'notes' => $notes, 'credentialsWebsiteID' => $credentialsWebsiteID);
-                $credentialsWebsiteGateway->update($credentialsWebsiteID, $data);
+                $websiteGateway->update($credentialsWebsiteID, $data);
 
 
                 //Success 0

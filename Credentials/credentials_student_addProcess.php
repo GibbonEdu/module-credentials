@@ -18,7 +18,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use Gibbon\Module\Credentials\CredentialsCredentialGateway;
+use Gibbon\Module\Credentials\Domain\CredentialGateway;
 
 include '../../gibbon.php';
 
@@ -56,9 +56,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
             $URL .= '&return=error3';
             header("Location: {$URL}");
         } else {
-            $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
+            $credentialGateway = $container->get(CredentialGateway::class);
             $data = array('gibbonPersonID' => $gibbonPersonID, 'credentialsWebsiteID' => $credentialsWebsiteID);
-            $credentialsWebsite = $credentialsCredentialGateway->selectBy($data)->fetch();
+            $credentialsWebsite = $credentialGateway->selectBy($data)->fetch();
 
             if (!empty($credentialsWebsite)) {
                 $URL .= '&return=error3';
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
             } else {
                 //Write to database
                 $data = array('gibbonPersonID' => $gibbonPersonID, 'credentialsWebsiteID' => $credentialsWebsiteID, 'username' => $username, 'password' => $passwordFinal, 'notes' => $notes, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'timestampCreator' => date('Y-m-d H:i:s', time()));
-                $AI = $credentialsCredentialGateway->insert($data);
+                $AI = $credentialGateway->insert($data);
 
                 //Success 0
                 $URL .= '&return=success0&editID='.str_pad($AI, 4, '0', STR_PAD_LEFT);

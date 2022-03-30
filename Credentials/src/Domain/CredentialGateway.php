@@ -13,7 +13,7 @@
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-namespace Gibbon\Module\Credentials;
+namespace Gibbon\Module\Credentials\Domain;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
@@ -25,13 +25,13 @@ use Gibbon\Domain\Traits\SharedUserLogic;
  * @version v16
  * @since   v16
  */
-class CredentialsCredentialGateway extends QueryableGateway {
+class CredentialGateway extends QueryableGateway {
     use TableAware;
     use SharedUserLogic;
     private static $tableName = 'credentialsCredential';
     private static $primaryKey = 'credentialsCredentialID';
     private static $searchableColumns = ['gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.username', 'gibbonPerson.email', 'gibbonPerson.emailAlternate', 'gibbonPerson.studentID'];
-    
+
     /**
      * @param QueryCriteria $criteria
      * @param $gibbonSchoolYearID
@@ -45,14 +45,14 @@ class CredentialsCredentialGateway extends QueryableGateway {
             ->distinct()
             ->from('gibbonPerson')
             ->cols([
-                'gibbonPerson.gibbonPersonID', 
-                'gibbonPerson.status', 
-                'gibbonStudentEnrolmentID', 
-                'gibbonPerson.title', 
-                'gibbonPerson.surname', 
-                'gibbonPerson.preferredName', 
-                'gibbonYearGroup.nameShort AS yearGroup', 
-                'gibbonFormGroup.nameShort AS formGroup', 
+                'gibbonPerson.gibbonPersonID',
+                'gibbonPerson.status',
+                'gibbonStudentEnrolmentID',
+                'gibbonPerson.title',
+                'gibbonPerson.surname',
+                'gibbonPerson.preferredName',
+                'gibbonYearGroup.nameShort AS yearGroup',
+                'gibbonFormGroup.nameShort AS formGroup',
                 '(SELECT COUNT(gibbonPersonID) FROM credentialsCredential WHERE gibbonPersonID=gibbonPerson.gibbonPersonID) AS credentialCount'
             ])
             ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
@@ -78,9 +78,9 @@ class CredentialsCredentialGateway extends QueryableGateway {
         $criteria->addFilterRules($this->getSharedUserFilterRules());
 
         return $this->runQuery($query, $criteria);
-    }    
-    
-    
+    }
+
+
     /**
      * @param QueryCriteria $criteria
      * @param $gibbonSchoolYearID
@@ -93,12 +93,12 @@ class CredentialsCredentialGateway extends QueryableGateway {
             ->distinct()
             ->from('gibbonPerson')
             ->cols([
-                'gibbonPerson.gibbonPersonID', 
-                'gibbonPerson.status', 
-                'gibbonPerson.surname', 
-                'gibbonPerson.preferredName', 
-                'gibbonYearGroup.nameShort AS yearGroup', 
-                'gibbonFormGroup.nameShort AS formGroup', 
+                'gibbonPerson.gibbonPersonID',
+                'gibbonPerson.status',
+                'gibbonPerson.surname',
+                'gibbonPerson.preferredName',
+                'gibbonYearGroup.nameShort AS yearGroup',
+                'gibbonFormGroup.nameShort AS formGroup',
                 '(SELECT COUNT(gibbonPersonID) FROM credentialsCredential WHERE gibbonPersonID=gibbonPerson.gibbonPersonID) AS credentialCount'
             ])
             ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
@@ -121,7 +121,7 @@ class CredentialsCredentialGateway extends QueryableGateway {
         $criteria->addFilterRules($this->getSharedUserFilterRules());
 
         return $this->runQuery($query, $criteria);
-    }    
+    }
 
     public function queryViewCredentialsByPerson(QueryCriteria $criteria, $gibbonPersonID, $websiteTitle = '') {
         $query = $this
@@ -140,8 +140,8 @@ class CredentialsCredentialGateway extends QueryableGateway {
                 ->innerJoin('credentialsWebsite', 'credentialsCredential.credentialsWebsiteID=credentialsWebsite.credentialsWebsiteID')
                 ->where("credentialsWebsite.active = 'Y'")
                 ->where("gibbonPersonID=:gibbonPersonID")
-                ->bindValue('gibbonPersonID', $gibbonPersonID);     
-                
+                ->bindValue('gibbonPersonID', $gibbonPersonID);
+
         if ($websiteTitle != '') {
             $query->where('credentialsWebsite.title=:title')
                   ->bindValue('title', $websiteTitle);
@@ -149,7 +149,7 @@ class CredentialsCredentialGateway extends QueryableGateway {
         else {
             $query->orderBy(['title']);
         }
-        
+
         return $this->runQuery($query, $criteria);
     }
 }

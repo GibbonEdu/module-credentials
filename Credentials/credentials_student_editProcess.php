@@ -18,7 +18,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use Gibbon\Module\Credentials\CredentialsCredentialGateway;
+use Gibbon\Module\Credentials\Domain\CredentialGateway;
 
 include '../../gibbon.php';
 
@@ -42,8 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
         echo __m('Fatal error loading this page!');
     } else {
 
-        $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
-        $credential = $credentialsCredentialGateway->getById($credentialsCredentialID);
+        $credentialGateway = $container->get(CredentialGateway::class);
+        $credential = $credentialGateway->getById($credentialsCredentialID);
         if (!$credential and ! empty($credential)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
@@ -66,9 +66,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
-                $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
+                $credentialGateway = $container->get(CredentialGateway::class);
                 $data = array('gibbonPersonID' => $gibbonPersonID, 'credentialsWebsiteID' => $credentialsWebsiteID);
-                $credentialsWebsite = $credentialsCredentialGateway->selectBy($data)->fetch();
+                $credentialsWebsite = $credentialGateway->selectBy($data)->fetch();
 
                 if (empty($credentialsWebsite)) {
                     $URL .= '&return=error3';
@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 } else {
                     //Write to database
                     $data = array('gibbonPersonID' => $gibbonPersonID, 'credentialsWebsiteID' => $credentialsWebsiteID, 'username' => $username, 'password' => $passwordFinal, 'notes' => $notes, 'gibbonPersonID' => $gibbonPersonID, 'credentialsCredentialID' => $credentialsCredentialID);
-                    $credentialsCredentialGateway->update($credentialsCredentialID, $data);
+                    $credentialGateway->update($credentialsCredentialID, $data);
 
                     //Success 0
                     $URL .= '&return=success0';

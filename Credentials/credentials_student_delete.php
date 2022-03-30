@@ -19,7 +19,7 @@
  */
 
 use Gibbon\Forms\Prefab\DeleteForm;
-use Gibbon\Module\Credentials\CredentialsCredentialGateway;
+use Gibbon\Module\Credentials\Domain\CredentialsCredentialGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_student_delete.php') == false) {
     //Acess denied

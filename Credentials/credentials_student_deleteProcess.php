@@ -18,7 +18,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use Gibbon\Module\Credentials\CredentialsCredentialGateway;
+use Gibbon\Module\Credentials\Domain\CredentialGateway;
 
 include '../../gibbon.php';
 
@@ -40,8 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
     if (($credentialsCredentialID == '') or ( $gibbonPersonID == '')) {
         echo __m('Fatal error loading this page!');
     } else {
-        $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
-        $credential = $credentialsCredentialGateway->getById($credentialsCredentialID);
+        $credentialGateway = $container->get(CredentialGateway::class);
+        $credential = $credentialGateway->getById($credentialsCredentialID);
 
         if (!$credential) {
             //Fail 2
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
             header("Location: {$URL}");
         } else {
             //Write to database
-            $credentialsCredentialGateway->delete($credentialsCredentialID);
+            $credentialGateway->delete($credentialsCredentialID);
 
             //Success 0
             $URLDelete = $URLDelete.'&return=success0';

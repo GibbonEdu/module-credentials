@@ -20,7 +20,7 @@
 
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Module\Credentials\CredentialsWebsiteGateway;
+use Gibbon\Module\Credentials\Domain\WebsiteGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites.php') == false) {
     //Acess denied
@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites.php')
 } else {
     $page->breadcrumbs->add(__m('Manage Websites'));
 
-    $websiteGateway = $container->get(CredentialsWebsiteGateway::class);
+    $websiteGateway = $container->get(WebsiteGateway::class);
     $criteria = $websiteGateway->newQueryCriteria()->sortBy(['title']);
     $website = $websiteGateway->queryAllCredentialsWebsite($criteria);
 

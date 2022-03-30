@@ -21,7 +21,7 @@
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Module\Credentials\CredentialsCredentialGateway;
+use Gibbon\Module\Credentials\Domain\CredentialGateway;
 
 include './modules/Credentials/moduleFunctions.php';
 
@@ -69,30 +69,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
 
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
-    $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
+    $credentialGateway = $container->get(CredentialGateway::class);
 
-    $updateCredentials = @$credentialsCredentialGateway->selectBy(['encryptAlgorithm' => 'mcrypt'])->fetchAll();
+    $updateCredentials = @$credentialGateway->selectBy(['encryptAlgorithm' => 'mcrypt'])->fetchAll();
 
     if(!empty($updateCredentials)) {
         foreach ($updateCredentials as $credentials) {
             $data = array('password' => changeMcryptToOpenssl($credentials['password']), 'encryptAlgorithm' => 'openssl');
-            $credentialsCredentialGateway->update($credentials['credentialsCredentialID'], $data);
+            $credentialGateway->update($credentials['credentialsCredentialID'], $data);
         }
     }
 
-    $searchColumns = $credentialsCredentialGateway->getSearchableColumns();
+    $searchColumns = $credentialGateway->getSearchableColumns();
 
-    $criteria = $credentialsCredentialGateway->newQueryCriteria()
+    $criteria = $credentialGateway->newQueryCriteria()
             ->searchBy($searchColumns, $search)
             ->sortBy(['surname', 'preferredName'])
             ->filterBy('all', $allStudents)
             ->fromPOST();
-    $students = $credentialsCredentialGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID);
+    $students = $credentialGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID);
 
     // DATA TABLE
     $table = DataTable::createPaginated('students', $criteria);
 
-    $table->modifyRows($credentialsCredentialGateway->getSharedUserRowHighlighter());
+    $table->modifyRows($credentialGateway->getSharedUserRowHighlighter());
 
     $table->addMetaData('filterOptions', [
         'all:on' => __m('All Students')

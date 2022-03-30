@@ -21,7 +21,7 @@
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Module\Credentials\CredentialsCredentialGateway;
+use Gibbon\Module\Credentials\Domain\CredentialsCredentialGateway;
 
 //Module includes
 include './modules/Credentials/moduleFunctions.php';

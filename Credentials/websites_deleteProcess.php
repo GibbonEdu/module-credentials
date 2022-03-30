@@ -18,7 +18,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use Gibbon\Module\Credentials\CredentialsWebsiteGateway;
+use Gibbon\Module\Credentials\WebsiteGateway;
 use Gibbon\Module\Credentials\CredentialsCredentialGateway;
 
 include '../../gibbon.php';
@@ -39,14 +39,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_delet
         echo __m('Fatal error loading this page!');
     } else {
         $data = array('credentialsWebsiteID' => $credentialsWebsiteID);
-        $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
-        $credentialsCredentialGateway->deleteWhere($data);
-        $credentials = $credentialsCredentialGateway->selectBy($data)->fetch();
+        $credentialGateway = $container->get(CredentialsCredentialGateway::class);
+        $credentialGateway->deleteWhere($data);
+        $credentials = $credentialGateway->selectBy($data)->fetch();
 
         if (empty($credentials)) {
             //Write to database
-            $credentialsWebsiteGateway = $container->get(CredentialsWebsiteGateway::class);
-            $website = $credentialsWebsiteGateway->getById($credentialsWebsiteID);
+            $websiteGateway = $container->get(WebsiteGateway::class);
+            $website = $websiteGateway->getById($credentialsWebsiteID);
 
             if ($website['logo'] != '') {
                 $fileLogo = $session->get('absolutePath').'/'.$website['logo'];
@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_delet
                     unlink($fileLogo);
                 }
             }
-            $credentialsWebsiteGateway->delete($credentialsWebsiteID);
+            $websiteGateway->delete($credentialsWebsiteID);
 
             //Success 0
             $URLDelete = $URLDelete.'&return=success0';

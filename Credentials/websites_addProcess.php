@@ -18,7 +18,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use Gibbon\Module\Credentials\CredentialsWebsiteGateway;
+use Gibbon\Module\Credentials\WebsiteGateway;
 
 include '../../gibbon.php';
 
@@ -42,9 +42,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.p
         header("Location: {$URL}");
     } else {
         //Check unique inputs for uniquness
-        $credentialsWebsiteGateway = $container->get(CredentialsWebsiteGateway::class);
+        $websiteGateway = $container->get(WebsiteGateway::class);
         $data = array('title' => $title);
-        $website = $credentialsWebsiteGateway->selectBy($data)->fetch();
+        $website = $websiteGateway->selectBy($data)->fetch();
 
         if (!empty($website)) {
             $URL .= '&return=error3';
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_add.p
 
             //Write to database
             $data = array('title' => $title, 'active' => $active, 'url' => $url, 'logo' => $logo, 'notes' => $notes, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'timestampCreator' => date('Y-m-d H:i:s', time()));
-            $AI = $credentialsWebsiteGateway->insert($data);
+            $AI = $websiteGateway->insert($data);
 
             //Success 0
             if ($partialFail == true) {

@@ -19,7 +19,7 @@
  */
 
 use Gibbon\Forms\Form;
-use Gibbon\Module\Credentials\CredentialsWebsiteGateway;
+use Gibbon\Module\Credentials\Domain\Domain\WebsiteGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.php') == false) {
     //Acess denied
@@ -42,8 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
         echo __m('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-        $credentialsWebsiteGateway = $container->get(CredentialsWebsiteGateway::class);
-        $values = $credentialsWebsiteGateway->getById($credentialsWebsiteID);
+        $websiteGateway = $container->get(WebsiteGateway::class);
+        $values = $websiteGateway->getById($credentialsWebsiteID);
 
         $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/websites_editProcess.php?credentialsWebsiteID='.$credentialsWebsiteID);
 
