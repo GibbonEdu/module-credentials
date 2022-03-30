@@ -19,8 +19,8 @@
 
 use Gibbon\Forms\Form;
 use Gibbon\Domain\User\UserGateway;
-use Gibbon\Module\Credentials\CredentialGateway;
-use Gibbon\Module\Credentials\WebsiteGateway;
+use Gibbon\Module\Credentials\Domain\CredentialGateway;
+use Gibbon\Module\Credentials\Domain\WebsiteGateway;
 
 //Module includes
 include './modules/Credentials/moduleFunctions.php';

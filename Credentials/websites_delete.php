@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
-use Gibbon\Module\Credentials\Domain\CredentialsWebsiteGateway;
+use Gibbon\Module\Credentials\Domain\WebsiteGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_delete.php') == false) {
     //Acess denied
@@ -34,8 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_delet
         echo '</div>';
     } else {
         //Proceed
-        $credentialsWebsiteGateway = $container->get(CredentialsWebsiteGateway::class);
-        $website = $credentialsWebsiteGateway->getById($credentialsWebsiteID);
+        $websiteGateway = $container->get(WebsiteGateway::class);
+        $website = $websiteGateway->getById($credentialsWebsiteID);
 
         //Let's go!
         $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/websites_deleteProcess.php?credentialsWebsiteID=$credentialsWebsiteID");

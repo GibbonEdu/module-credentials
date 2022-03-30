@@ -20,7 +20,7 @@
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Module\Credentials\Domain\CredentialsCredentialGateway;
+use Gibbon\Module\Credentials\Domain\CredentialGateway;
 
 //Module includes
 include './modules/Credentials/moduleFunctions.php';
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
 
         $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
-        $studentGateway = $container->get(CredentialsCredentialGateway::class);
+        $studentGateway = $container->get(CredentialGateway::class);
         $searchColumns = $studentGateway->getSearchableColumns();
 
         $criteria = $studentGateway->newQueryCriteria()

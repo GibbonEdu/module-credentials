@@ -21,7 +21,7 @@
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Module\Credentials\Domain\CredentialsCredentialGateway;
+use Gibbon\Module\Credentials\Domain\CredentialGateway;
 
 //Module includes
 include './modules/Credentials/moduleFunctions.php';
@@ -45,10 +45,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
 
         $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
-        $studentGateway = $container->get(CredentialsCredentialGateway::class);
+        $credentialGateway = $container->get(CredentialGateway::class);
 
-        $criteria = $studentGateway->newQueryCriteria();
-        $students = $studentGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonPersonID);
+        $criteria = $credentialGateway->newQueryCriteria();
+        $students = $credentialGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonPersonID);
 
 
         if ($students->getResultCount() != 1) {
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Credentials', 'credentials.php')->withQueryParams($params));
             }
 
-            $studentCredentials = $studentGateway->queryViewCredentialsByPerson($criteria, $gibbonPersonID);
+            $studentCredentials = $credentialGateway->queryViewCredentialsByPerson($criteria, $gibbonPersonID);
 
             // DATA TABLE
             $table = DataTable::createPaginated('credentials_students', $criteria);

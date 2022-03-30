@@ -20,8 +20,8 @@
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Module\Credentials\CredentialsCredentialGateway;
-use Gibbon\Module\Credentials\CredentialsWebsiteGateway;
+use Gibbon\Module\Credentials\Domain\CredentialGateway;
+use Gibbon\Module\Credentials\Domain\WebsiteGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_student_add.php') == false) {
     //Acess denied
@@ -40,15 +40,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
     } else {
         $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
-        $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
-        $searchColumns = $credentialsCredentialGateway->getSearchableColumns();
+        $credentialGateway = $container->get(CredentialGateway::class);
+        $searchColumns = $credentialGateway->getSearchableColumns();
 
-        $criteria = $credentialsCredentialGateway->newQueryCriteria()
+        $criteria = $credentialGateway->newQueryCriteria()
             ->searchBy($searchColumns, $search)
             ->sortBy(['surname', 'preferredName'])
             ->filterBy('all', $allStudents)
             ->fromPOST();
-        $students = $credentialsCredentialGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonPersonID);
+        $students = $credentialGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonPersonID);
 
         if ($students->getResultCount() != 1) {
             echo "<div class='error'>";
@@ -92,9 +92,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                     ->addParams($params);
             }
 
-            $credentialsWebsiteGateway = $container->get(CredentialsWebsiteGateway::class);
+            $websiteGateway = $container->get(WebsiteGateway::class);
 
-            $criteria = $credentialsWebsiteGateway->newQueryCriteria()
+            $criteria = $websiteGateway->newQueryCriteria()
                     ->sortBy(['title']);
 
             $sql = "SELECT credentialsWebsiteID as value, title as name FROM credentialsWebsite WHERE active='Y' ORDER BY title";

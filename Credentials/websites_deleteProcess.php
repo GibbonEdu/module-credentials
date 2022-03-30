@@ -18,8 +18,8 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use Gibbon\Module\Credentials\WebsiteGateway;
-use Gibbon\Module\Credentials\CredentialsCredentialGateway;
+use Gibbon\Module\Credentials\Domain\WebsiteGateway;
+use Gibbon\Module\Credentials\Domain\CredentialGateway;
 
 include '../../gibbon.php';
 
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_delet
         echo __m('Fatal error loading this page!');
     } else {
         $data = array('credentialsWebsiteID' => $credentialsWebsiteID);
-        $credentialGateway = $container->get(CredentialsCredentialGateway::class);
+        $credentialGateway = $container->get(CredentialGateway::class);
         $credentialGateway->deleteWhere($data);
         $credentials = $credentialGateway->selectBy($data)->fetch();
 

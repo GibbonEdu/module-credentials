@@ -20,7 +20,7 @@
 
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Module\Credentials\CredentialGateway;
+use Gibbon\Module\Credentials\Domain\CredentialGateway;
 
 require_once $session->get('absolutePath')."/modules/Credentials/src/Domain/CredentialGateway.php";
 

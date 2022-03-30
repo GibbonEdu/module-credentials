@@ -19,7 +19,7 @@
  */
 
 use Gibbon\Forms\Prefab\DeleteForm;
-use Gibbon\Module\Credentials\Domain\CredentialsCredentialGateway;
+use Gibbon\Module\Credentials\Domain\CredentialGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_student_delete.php') == false) {
     //Acess denied
@@ -39,15 +39,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
 
         $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
-        $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
-        $searchColumns = $credentialsCredentialGateway->getSearchableColumns();
+        $credentialGateway = $container->get(CredentialGateway::class);
+        $searchColumns = $credentialGateway->getSearchableColumns();
 
-        $criteria = $credentialsCredentialGateway->newQueryCriteria()
+        $criteria = $credentialGateway->newQueryCriteria()
                 ->searchBy($searchColumns, $search)
                 ->sortBy(['surname', 'preferredName'])
                 ->filterBy('all', $allStudents)
                 ->fromPOST();
-        $students = $credentialsCredentialGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonPersonID);
+        $students = $credentialGateway->queryStudentBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonPersonID);
 
         if ($students->getResultCount() == 1) {
             //Check if credentialsCredentialID was specified
@@ -57,8 +57,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials_st
                 echo __m('You have not specified one or more required parameters.');
                 echo '</div>';
             } else {
-                $credentialsCredentialGateway = $container->get(CredentialsCredentialGateway::class);
-                $credential = $credentialsCredentialGateway->getById($credentialsCredentialID);
+                $credentialGateway = $container->get(CredentialGateway::class);
+                $credential = $credentialGateway->getById($credentialsCredentialID);
 
                 //Let's go!
                 $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/credentials_student_deleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&credentialsCredentialID=$credentialsCredentialID");

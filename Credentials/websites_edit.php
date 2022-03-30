@@ -19,7 +19,7 @@
  */
 
 use Gibbon\Forms\Form;
-use Gibbon\Module\Credentials\Domain\Domain\WebsiteGateway;
+use Gibbon\Module\Credentials\Domain\WebsiteGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.php') == false) {
     //Acess denied
