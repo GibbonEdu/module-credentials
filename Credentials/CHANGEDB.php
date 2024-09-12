@@ -169,3 +169,10 @@ $sql[$count][1] = "";
 ++$count;
 $sql[$count][0] = '3.1.09';
 $sql[$count][1] = "";
+
+//v3.2.00
+++$count;
+$sql[$count][0] = '3.2.00';
+$sql[$count][1] = "
+UPDATE gibbonModule SET author='Gibbon Foundation', url='https://gibbonedu.org' WHERE name='Credentials';end
+";
