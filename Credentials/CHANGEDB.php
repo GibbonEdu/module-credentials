@@ -176,3 +176,8 @@ $sql[$count][0] = '3.2.00';
 $sql[$count][1] = "
 UPDATE gibbonModule SET author='Gibbon Foundation', url='https://gibbonedu.org' WHERE name='Credentials';end
 ";
+
+//v3.2.01
+++$count;
+$sql[$count][0] = '3.2.01';
+$sql[$count][1] = "";
