@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
     $allStudents = $_GET['allStudents'] ?? '';
 
     $form = Form::create('search', $session->get('absoluteURL').'/index.php', 'get');
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/credentials.php');
 

@@ -27,7 +27,7 @@ $description = 'Credentials is a module for storing student login details, and m
 $entryURL = 'credentials.php';
 $type = 'Additional';
 $category = 'Admin';
-$version = '3.2.02';
+$version = '3.3.00';
 $author = "Gibbon Foundation";
 $url = "https://gibbonedu.org";
 
