@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/websites_edit.
 
                 //Move attached image  file, if there is one
                 if (!empty($_FILES['file1']['tmp_name'])) {
-                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                    $fileUploader = new Gibbon\FileUploader($pdo, $session);
                     $fileUploader->getFileExtensions('Graphics/Design');
 
                     $file = (isset($_FILES['file1'])) ? $_FILES['file1'] : null;

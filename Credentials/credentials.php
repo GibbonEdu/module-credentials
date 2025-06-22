@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Credentials/credentials.ph
     $row->addCheckbox('allStudents')->setValue('on')->checked($allStudents);
 
     $row = $form->addRow();
-    $row->addSearchSubmit($gibbon->session, __m('Clear Search'));
+    $row->addSearchSubmit($session, __m('Clear Search'));
 
     echo $form->getOutput();
 
